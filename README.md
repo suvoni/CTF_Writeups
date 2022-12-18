@@ -1,2 +1,2 @@
 # CTF_Writeups
-CTF Competition Write-Ups
+An archive of my CTF competition experiences.
