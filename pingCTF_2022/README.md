@@ -185,3 +185,6 @@ It looks like Phoebe Velez is our culprit! The hidden data in the two cells is `
 
 ## 4) welcome
 
+The following clue is available on the rules page of the pingCTF Discord server:
+
+![discord]()
