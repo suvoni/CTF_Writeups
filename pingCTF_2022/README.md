@@ -204,7 +204,7 @@ The second and third guessing tests (see ./guesswhat/src/part1.py and ./guesswha
 
 Finally, the last guessing test (see ./guesswhat/src/part3.py) is the hardest. The program reads the contents of the flag (i.e., the flag contents in between the brackets of ping{...}) and generates all permutations of the flag. Like the previous tests, it prints all permutations except the *real* flag, and we have 15 seconds to find the correct one. Luckily, the time limit doesn't really matter, since exceeding it doesn't prohibit us from getting the flag. After connecting to the challenge server and seeing the printed permutations, we find out that there are 10 characters in the flag: **F28ied9a4n**. That means we have 10! = 3628800 permutations to generate and must find the missing one - a true needle in the haystack!
 
-Okay, enough chatter. The solution code is:
+**Python Solution:**
 ```Python
 import pexpect
 from src.common import *
