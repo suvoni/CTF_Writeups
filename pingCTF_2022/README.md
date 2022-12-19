@@ -87,7 +87,6 @@ class Flawless:
     def move(self, c, j):
         current_ciphertext_int = ord(encrypted[j])
         current_plaintext_int = ord(c)
-        #self.alphabet[current_plaintext_int] = current_ciphertext_int
 
         alph_byte = ord(self.alphabet[current_plaintext_int])
         flag_byte = None
