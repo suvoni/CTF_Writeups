@@ -670,7 +670,7 @@ encrypted = dialog.encrypt(message)
 print(encrypted)
 ```
 
-The challenge authors provide us with a file called ```out.txt``` which contains the ciphertext encrypted by the flag as the key, using the same plaintext message shown in the code above. Since we know both the ciphertext and plaintext, it is a trivial matter of brute forcing every possible key char at each step of the decryption to reconstruct the key/flag.
+The challenge authors provide us with a file called ```out.txt``` which contains the ciphertext which was encrypted by this scheme using the flag as the key, and using the same plaintext message shown in the code above. Since we know both the ciphertext and plaintext, it is a trivial matter of brute forcing every possible key char at each step of the decryption to reconstruct the key/flag.
 
 **Python Solution:**
 ```Python3
