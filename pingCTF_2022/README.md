@@ -12,7 +12,9 @@ Competition URL: https://ctf.knping.pl/
 | secret formula | Misc | ping{FINdgUSTaVOFrIng} |
 | ping game | Misc | ping{sdgh4wmh_gg_wp_2022} |
 | toss a coin to your witcher | Crypto | ping{LAMBERT_WHAT_A_PRICK} |
-| kind crypto | Crypto | |
+| kind (1/3) | Crypto | |
+| vater (2/3) | Crypto | |
+| opa (3/3) | Crypto | |
 
 ## 1) Baby Rev
 In this simple reverse engineering challenge, we are given an ELF64 executable named ```babyrev``` to analyze. Opening it up in Ghidra or IDA, we can easily find a red herring function named ```checkflag``` and decompile it:
@@ -600,3 +602,5 @@ By far the most repeated *n*-graphs occurred at multiples of 17 characters apart
 The decrypted plaintext and the key are output on the left! The plaintext is fairly non-sensical, and it turns out the key is the flag we are looking for (remember to add your underscores!).
 
 **Flag:** ```ping{LAMBERT_WHAT_A_PRICK}```
+
+# 9) kind (1/3)
