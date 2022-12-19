@@ -613,16 +613,16 @@ Probably the hardest part of this challenge is figuring out what type of cipher 
 If you're unfamiliar with how Enigma Machines operate, I highly recommend the resources found [here](https://www.codesandciphers.org.uk/enigma/) and [here](http://kerryb.github.io/enigma/). They are, at their core, very sophisticated substitution ciphers layered on top of one another and are very good to know about if you're interested in cryptography.
 
 The image gives us the following information:
-- The type of Enigma Machine ```(M3)```
-- The configuration of the first rotor ```(III)```
-- The ring positions ```(10 6 9)```
-- The rotor positions ```(7 15 12) --> (G O L)```
-- The plugboard configurations ```(GI VE TO YB AC KP LZ XR QH FN)```
-- The ciphertext ```gjmsjnjbijovlrcnkem```
+- The type of Enigma Machine: ```(M3)```
+- The configuration of the first rotor: ```(III)```
+- The ring positions: ```(10 6 9)```
+- The rotor positions: ```(7 15 12) --> (G O L)```
+- The plugboard configurations: ```(GI VE TO YB AC KP LZ XR QH FN)```
+- The ciphertext: ```gjmsjnjbijovlrcnkem```
 
 The image leaves out the following information:
-- The type of reflector ```(UKW-B or UKW-C)```
-- The configuration of the second and third rotors ```(I-VIII) (I-VIII)```
+- The type of reflector: ```(UKW-B or UKW-C)```
+- The configuration of the second and third rotors: ```(I-VIII) (I-VIII)```
 
 Thus, it's clear that our goal is to brute force the missing information to determine the exact Enigma Machine configuration that decodes the ciphertext into a coherent plaintext. To automate this process, I use the [aenig4](https://jorgicor.niobe.org/aenig4/) command line utility to easily emulate the Enigma Machine logic. This command line utility takes as its command line arguments the parameters discussed above (rotor configuration, ring and rotor starting positions, plugboard configurations, etc.) and outputs the decoded plaintext. Using this tool, I wrote a Python script to efficiently brute force the flag.
 
@@ -679,17 +679,17 @@ We are given another Enigma Machine with certain parameters blotted out:
 ![vater](./vater/vater_crypto.png)
 
 The image gives us the following information:
-- The type of Enigma Machine ```(M4)```
-- The configuration of the first rotor ```(Beta)```
-- The first two ring positions ```(18 14)```
-- The rotor positions ```(T H G B)```
-- The plugboard configurations ```(WH AT RE YU LO KI NG FS QX CM)```
-- The ciphertext ```qtdaxvuvzxwbojdcatgxzpawfhenoor```
+- The type of Enigma Machine: ```(M4)```
+- The configuration of the first rotor: ```(Beta)```
+- The first two ring positions: ```(18 14)```
+- The rotor positions: ```(T H G B)```
+- The plugboard configurations: ```(WH AT RE YU LO KI NG FS QX CM)```
+- The ciphertext: ```qtdaxvuvzxwbojdcatgxzpawfhenoor```
 
 The image leaves out the following information:
-- The type of reflector ```(UKW-B or UKW-C)```
-- The configuration of the second, third, and fourth rotors ```(I-VIII) (I-VIII) (I-VIII)```
-- The third and fourth ring positions ```(1-26) (1-26)```
+- The type of reflector: ```(UKW-B or UKW-C)```
+- The configuration of the second, third, and fourth rotors: ```(I-VIII) (I-VIII) (I-VIII)```
+- The third and fourth ring positions: ```(1-26) (1-26)```
 
 This time, the complexity of the problem has increased. Instead of using an M3 machine (which only has 3 rotors) we are now using an M4 machine (which has 4 - the extra rotor is called Beta/Gamma, depending on which one is chosen). Additionally, more information is missing this time, 3 rotor configurations and 2 ring positions. This means that there are more possible combinations of configurations possible and thus our brute force approach might take longer. 
 
@@ -762,3 +762,78 @@ As you can see, as we start brute forcing large numbers of combinations, we'll s
 
 **Flag:** ```ping{it_was_my_vader_who_killed_my_wife}```
 
+# 11) opa (3/3)
+We are, yet again, given an Enigma Machine with certain parameters blotted out:
+
+![opa](./opa/opa_crypto.png)
+
+The image gives us the following information:
+- The type of Enigma Machine: ```(M3)```
+- The type of reflector: ```(UKW-B)```
+- The ring positions: ```(D I E)```
+- The plugboard configurations, except for one letter: ```(W? XS OL DE VI JQ HU RT FA MZ)```
+- The ciphertext: ```rjzdexbilwzqpabtjpmsppwscbcnhpykjidgkg```
+
+The image leaves out the following information:
+- The rotor configurations: ```(I-VIII) (I-VIII) (I-VIII)```
+- The rotor starting positions: ```(A-Z) (A-Z) (A-Z)```
+- The missing plugboard letter: ```is one of (b, c, g, k, n, p, y)```
+
+We are once again using an M3 machine, but even more information is missing, so our complexity is increased once again. This time, we are brute forcing 3 rotor configurations with 8 possibilities each, 3 rotor starting positions with 26 possibilities each, and one plugboard letter with 7 possibilities --> ```8*8*8*26*26*26*7 = 62992384``` combinations. Again, this is an upper limit, but ~63 million combinations will take quite a bit longer to brute force than the ~700,000 combinations in the previous challenge.
+
+**Python Solution:**
+```Python
+import subprocess
+
+rotors = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII']
+rotor_positions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+letters = ['b', 'c', 'g', 'k', 'n', 'p', 'y']
+
+f = open('out.txt', 'w')
+
+num_combinations = len(rotors)**3 * len(rotor_positions)**3 * len(letters)
+print("Total number of combinations: " + str(num_combinations) + '\n')
+
+count = 0
+
+for rot1 in rotors:
+    for rot2 in rotors:
+
+        #Aenig4 does not allow repeated rotors
+        if rot2 == rot1:
+            continue
+
+        for rot3 in rotors:
+
+            #Aenig4 does not allow repeated rotors
+            if rot3 == rot1 or rot3 == rot2:
+                continue
+                
+            for pos1 in rotor_positions:
+                for pos2 in rotor_positions:
+                    for pos3 in rotor_positions:
+                        for letter in letters:
+
+                            count += 1
+                            if count % 100000 == 0:
+                                print("--> " + str(count) + "/" + str(num_combinations) + " messages decoded (" + str((float(count) / float(num_combinations))*100) + "%)...")
+
+                        #For the given reflector/rotor/ring/plugboard configuration, attempt to decode the ciphertext
+                        #in source.txt using the M4 Enigma machine
+                        command = 'aenig4 -k \"b Beta ' + rot1 + ' ' + rot2 + ' ' + rot3 + ' 1 4 9 5 A' + pos1 + pos2 + pos3
+                        command = command + ' W' + letter + ' XS OL DE VI JQ HU RT FA MZ\" source.txt dest.txt'
+                        output = subprocess.getoutput(command)
+
+                        #Now read the output from 'dest.txt' and write it to the culmulative output file
+                        f2 = open('dest.txt', 'r')
+                        decrypted = f2.readline()
+                        if decrypted[0:4] == "ping":
+                            f.write(decrypted)
+                            print('--> Potential Answer: ' + decrypted)
+                        f2.close()
+f.close()
+```
+
+After about 15 minutes running on my machine, I luckily found the flag after only ~10% of the possible combinations were computed.
+
+**Output:**
