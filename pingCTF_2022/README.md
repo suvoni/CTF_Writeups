@@ -160,4 +160,7 @@ enciphered = generator.encipher(very_secret_cipher_text)
 **Flag:** ```ping{3n1gm4_fl4sh_b4ck5_d0_y0u_r3c4ll?}```
 
 ## 3) high school grades
-We are given a password-protected Excel spreadsheet with students' grades on it. A clue given to us is that the teacher isn't very creative with their password. Knowing this, I used John the Ripper to crack the password easily. To do this, I first had to 
+We are given a password-protected Excel spreadsheet with students' grades on it. A clue given to us is that the teacher isn't very creative with their password, indicating that the password is very weak (and hence, easily crackable by brute force!). Knowing this, John the Ripper can be used to crack the password easily. To do this, I first had to generate the password hash that John needs to operate properly. Since the Excel file is a Microsoft Office file, the ```office2john.py``` utility is needed for this. The full command to generate the hash file for me was:
+```/usr/share/john/office2john.py HS_Grades_December_2022.xlsx > hash.txt```
+Then, to crack the password with John, a wordlist is needed for brute force password generation. I used the classic ```rockyou.txt``` which can be found easily on the internet. Once that was downloaded, cracking the password was as easy as running a simple command:
+!(./highschoolgrades/john_excel.png)
