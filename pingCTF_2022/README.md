@@ -166,4 +166,4 @@ We are given a password-protected Excel spreadsheet with students' grades on it.
 
 Then, to crack the password with John, a wordlist is needed for brute force password generation. I used the classic ```rockyou.txt``` which can be found easily on the internet. Once that was downloaded, cracking the password was as easy as running a simple command:
 
-![](./highschoolgrades/john_excel.png)
+![ww](./highschoolgrades/john_excel.PNG)
