@@ -11,7 +11,8 @@ Competition URL: https://ctf.knping.pl/
 | guess what | Misc | ping{F28ied9a4n} |
 | secret formula | Misc | ping{FINdgUSTaVOFrIng} |
 | ping game | Misc | ping{sdgh4wmh_gg_wp_2022} |
-| toss a coin to your witcher | Crypto |
+| toss a coin to your witcher | Crypto | ping{LAMBERT_WHAT_A_PRICK} |
+| kind crypto | Crypto | |
 
 ## 1) Baby Rev
 In this simple reverse engineering challenge, we are given an ELF64 executable named ```babyrev``` to analyze. Opening it up in Ghidra or IDA, we can easily find a red herring function named ```checkflag``` and decompile it:
@@ -593,3 +594,9 @@ The Crypto Corner tool linked above can automatically find repeated sequences an
 ![sequences](./tossacointoyourwitcher/sequences.PNG)
 
 By far the most repeated *n*-graphs occurred at multiples of 17 characters apart, so this is most likely our key length. We can use the [Dcode Vigenere Cipher decoder](https://www.dcode.fr/vigenere-cipher) with a known key length of 17 to decrypt the message:
+
+![dcode2](./tossacointoyourwitcher/dcode2.PNG)
+
+The decrypted plaintext and the key are output on the left! The plaintext is fairly non-sensical, and it turns out the key is the flag we are looking for (remember to add your underscores!).
+
+**Flag:** ```ping{LAMBERT_WHAT_A_PRICK}```
