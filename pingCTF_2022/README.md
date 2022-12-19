@@ -1,7 +1,7 @@
 # pingCTF 2022 Writeup (3rd Place)
 ## 1) Baby Rev
 In this simple reverse engineering challenge, we are given an executable named ```babyrev``` to analyze. Opening it up in Ghidra, we can easily find the red herring function ```checkflag``` and decompile it. The crucial code in the function is:
-```
+```C
   local_10 = *(long *)(in_FS_OFFSET + 0x28);
   if ((((*param_1 == 'p') && (param_1[1] == 'i')) && (param_1[2] == 'n')) &&
      (((param_1[3] == 'g' && (param_1[4] == '{')) && (param_1[0x25] == '}')))) {
