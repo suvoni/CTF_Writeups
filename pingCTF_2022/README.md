@@ -6,6 +6,7 @@ Competition URL: https://ctf.knping.pl/
 | --------- | -------- | ---- |
 | baby rev  | Rev | ping{r3v3rs1ng_c4n_b3_S0_muCH_FUN!!!} |
 | crypto    | Rev | ping{3n1gm4_fl4sh_b4ck5_d0_y0u_r3c4ll?} |
+| high school grades | Misc | ping{sosmart,right?} |
 
 ## 1) Baby Rev
 In this simple reverse engineering challenge, we are given an ELF64 executable named ```babyrev``` to analyze. Opening it up in Ghidra or IDA, we can easily find a red herring function named ```checkflag``` and decompile it:
@@ -169,3 +170,15 @@ Then, to crack the password with John, a wordlist is needed for brute force pass
 ![john1](./highschoolgrades/john_excel.PNG)
 
 Bingo! The password is thus ```1234567```. Unlocking the Excel file, we see the following data:
+
+![excel1](./highschoolgrades/excel1.PNG)
+
+These are the student grades that the challenge description told us about. At first glance, there really isn't anything suspicious going on here. After doing a lot of close searching, we discover that there is hidden data within 2 cells:
+
+![phoebe1](./highschoolgrades/phoebe1.PNG)
+
+![phoebe2](./highschoolgrades/phoebe2.PNG)
+
+It looks like Phoebe Velez is our culprit! The hidden data in the two cells is ```ApnL3omr,ih?``` and ```AigssatrgtO3```. Looking very closely, you can see that our flag is hidden between these strings. Removing the leading 'A's (which were simply the grades) and alternating letters between the two strings, we can reconstruct the flag. For example, removing the leading 'A's leaves us with ```pnL3omr,ih?``` and ```igssatrgtO3```. Taking the first letters of both strings and putting them together gives us ```pi```. Taking the second two letters and adding them on gives us ```ping```. Continue the sequence (notice that L3 and O3 are the bracket characters in the Excel spreadsheet!) and we end up with the flag: ping{sosmart,right?}
+
+**Flag:** ping{sosmart,right?}
