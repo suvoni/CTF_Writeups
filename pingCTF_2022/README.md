@@ -452,12 +452,12 @@ In this challenge, we are given a Unity Ping Pong application with the flag hidd
 
 After downloading and running the game, it is a good idea to simply try out the game and see what it is like. Opening the game shows a character customization menu and a normal main menu page with several interactive pages:
 
-![main_menu](./pinggame/images/main_menu.PNG)
+![main_menu](./pinggame/images/main_menu.png)
 
 Playing the game for the first time, I realized it would be quite difficult to reach a score of 2022:
 
 https://user-images.githubusercontent.com/120992983/208358449-e918d722-4d4a-489a-8781-41c97d12d455.mp4
 
-So, it seems our only avenue is to hack the game!
+So, it seems our only course of action is to hack the game!
 
-Settings, Rankings, etc. pages as well as the Play button. Clicking ```Play``` brings up a screen where several balls are thrown toward you
+
