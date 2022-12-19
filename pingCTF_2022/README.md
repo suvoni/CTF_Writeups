@@ -639,8 +639,67 @@ https://user-images.githubusercontent.com/120992983/208371117-0ca4c3f0-7d4c-4914
 In this challenge, we are given a Python program ```app.py``` (included in ```./dialog/app.py```) which implements a simple encryption/decryption scheme. In this scheme, each character in the key/flag is added (encryption) or subtracted (decryption) modulo 256 to/from the corresponding character of the input. The code is shown below:
 
 ```Python
+import base64
+FLAG = open("flag.txt").readline().strip()
 
+class DialogEncryption:
+	def __init__(self, key):
+		self.key = key
+	
+	def encrypt(self, message):
+		encoded = ""
+		for i in range(len(message)):
+			key_c = self.key[i % len(self.key)][::-1]
+			encoded_c = chr((ord(message[i]) + ord(key_c)) % 256)
+			encoded += encoded_c
+		return base64.b64encode(encoded.encode()).decode()
+	
+	def decrypt(self, message):
+		decoded = ""
+		message = base64.b64decode(message).decode()
+		for i in range(len(message)):
+			key_c = self.key[i % len(self.key)][::-1]
+			decoded_c = chr((256 + ord(message[i]) - ord(key_c)) % 256)
+			decoded += decoded_c
+		return decoded
+
+key = FLAG
+dialog = DialogEncryption(key)
+message = "Hi Alice, I'm Bob. I'm sending you a secret message. I hope you can decrypt it."
+encrypted = dialog.encrypt(message)
+print(encrypted)
 ```
+
+The challenge authors provide us with a file called ```out.txt``` which contains the ciphertext encrypted by the flag as the key, using the same plaintext message shown in the code above. Since we know both the ciphertext and plaintext, it is a trivial matter of brute forcing every possible key char at each step of the decryption to reconstruct the key/flag.
+
+**Python Solution:**
+```Python3
+import base64
+
+plaintext = "Hi Alice, I'm Bob. I'm sending you a secret message. I hope you can decrypt it."
+
+def decrypt(message):
+    flag = ""
+    message = base64.b64decode(message).decode()
+    for i in range(len(message)):
+        for key_char in range(0, 256):
+            if plaintext[i] == chr((256 + ord(message[i]) - key_char) % 256):
+                flag += chr(key_char)
+                break
+    print(flag)
+    return
+
+f = open("out.txt", "r")
+ciphertext = f.readline().rstrip()
+decrypt(ciphertext)
+```
+
+**Output:**
+```
+ping{B451c5_0f_3ncrypt10n_t00_345y?-K3y_r3tr13v3d!}ping{B451c5_0f_3ncrypt10n_t0
+```
+
+**Flag:** ```ping{B451c5_0f_3ncrypt10n_t00_345y?-K3y_r3tr13v3d!}```
 
 # 9) toss a coin to your witcher
 We are given the following conversation between Geralt and Jaskier (characters from the popular game 'The Witcher'):
