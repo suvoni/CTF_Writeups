@@ -650,7 +650,7 @@ for ref in reflectors:
                 t = 'Gamma'
 
             #For the given reflector/rotor/ring configuration, attempt to decode the ciphertext
-            #in source.txt using the M4 Enigma machine
+            #in source.txt using the M3 Enigma machine
             command = 'aenig4 -k \"' + ref + ' ' + t + ' III ' + rot2 + ' ' + rot3 + ' 1 10 6 9 '
             command = command + 'AGOL GI VE TO YB AC KP LZ XR QH FN\" source.txt dest.txt'
             output = subprocess.getoutput(command)
