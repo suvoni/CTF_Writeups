@@ -583,3 +583,8 @@ It's rather clear that this is a cipher of some sort, and after plugging this in
 
 ![dcode](./tossacointoyourwitcher/dcode.PNG)
 
+Even though we don't know the key, there are known methods of breaking the Vigenere Cipher with just knowing the key length: this is called [Kasiski Analysis](https://en.wikipedia.org/wiki/Kasiski_examination). Kasiski Analysis takes advantage of the fact that in a Vigenere Cipher the key is repeated, and thus repeated string subsequences in the plaintext are likely to be repeated as well in the ciphertext (assuming the length of the key is relatively small in comparison to the length of the plaintext). By finding many instances of repeated *n-graphs* in the ciphertext we can work backwards to deduce the key length and subsequently break the cipher with frequency analysis.
+
+Luckily for us, there are [free online tools](https://crypto.interactive-maths.com/kasiski-analysis-breaking-the-code.html) available that can do all this work for us! :D
+
+The Crypto Corner tool linked above can automatically find repeated sequences and deduce the most probable key length. Inputing the ciphertext into the tool yields the following results:
