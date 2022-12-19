@@ -14,7 +14,7 @@ Competition URL: https://ctf.knping.pl/
 | toss a coin to your witcher | Crypto | ping{LAMBERT_WHAT_A_PRICK} |
 | kind (1/3) | Crypto | ping{can_you_find_my_dad} |
 | vater (2/3) | Crypto | ping{it_was_my_vader_who_killed_my_wife} |
-| opa (3/3) | Crypto | |
+| opa (3/3) | Crypto | ping{too_late_you_will_never_find_her_and_my_son} |
 
 ## 1) Baby Rev
 In this simple reverse engineering challenge, we are given an ELF64 executable named ```babyrev``` to analyze. Opening it up in Ghidra or IDA, we can easily find a red herring function named ```checkflag``` and decompile it:
@@ -837,3 +837,13 @@ f.close()
 After about 15 minutes running on my machine, I luckily found the flag after only ~10% of the possible combinations were computed.
 
 **Output:**
+![opa_output](./opa/opa_output.PNG)
+
+**Flag:** ```ping{too_late_you_will_never_find_her_and_my_son}```
+
+# Conclusion
+Thank you to everyone who read until the end! This is my first CTF write-up and I had a blast writing it and solving all these challenges.
+This is my first top-3 finish in a CTF and I hope to keep improving my skills.
+
+![ctf_scoreboard](./images/ping_ctf_scoreboard.PNG)
+
