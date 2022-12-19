@@ -580,3 +580,6 @@ Geralt: 😕
 - Hmmmmm....if only I could remember the key....
 ```
 It's rather clear that this is a cipher of some sort, and after plugging this into [Dcode's cipher identifier](https://www.dcode.fr/cipher-identifier) it seems likely that it is a Vigenere Cipher:
+
+![dcode](./tossacointoyourwitcher/dcode.PNG)
+
