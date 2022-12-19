@@ -8,6 +8,7 @@ Competition URL: https://ctf.knping.pl/
 | crypto    | Rev | ping{3n1gm4_fl4sh_b4ck5_d0_y0u_r3c4ll?} |
 | high school grades | Misc | ping{sosmart,right?} |
 | welcome | Misc | ping{W3lc0m3_t0_p1ngCTF_2022!_3c08b6c9a06c7db} |
+| guess what | Misc | Unkown |
 
 ## 1) Baby Rev
 In this simple reverse engineering challenge, we are given an ELF64 executable named ```babyrev``` to analyze. Opening it up in Ghidra or IDA, we can easily find a red herring function named ```checkflag``` and decompile it:
@@ -184,11 +185,206 @@ It looks like Phoebe Velez is our culprit! The hidden data in the two cells is `
 **Flag:** ```ping{sosmart,right?}```
 
 ## 4) welcome
-
 The following clue is available on the rules page of the pingCTF Discord server:
 
 ![discord](./welcome/discord.PNG)
 
-Going to the pingCTF Facebook page and messaging ```!flag``` to the bot will cause the bot to ask you if you liked their fanpage and Twitter. After saying yes to both questions, the bot will grant you the flag:
+Going to the pingCTF Facebook page and messaging ```!flag``` to the bot will cause the bot to ask you if you liked the pingCTF fanpage and Twitter. After saying yes to both questions, the bot will grant you the flag:
 
 ![facebook](./welcome/facebook.PNG)
+
+**Flag:** ```ping{W3lc0m3_t0_p1ngCTF_2022!_3c08b6c9a06c7db}```
+
+## 5) guess what
+This challenge provides a Python program that asks the user to correctly "guess" various strings and numbers that the program randomly generates. We are given the source code, and a quick investigation reveals that mere guessing will not be sufficient to get the flag - we have to automate a solution.
+
+There are 4 separate guessing tests in this challenge. The first guessing test (see the provided file ./guesswhat/src/pow.py) generates a SHA256 hash of a randomly-generated 20-byte number. The first 17 bytes of the number are given to us as well as the full hash. Our task is to "guess" the other 3 bytes of the number to continue to the next test. Obviously, the odds of guessing a 3-byte value correctly are stacked against us (it is a 1 in 2^24 = 16777216 chance!). So, we can write code to brute force this 3-byte value and submit it to the program to continue.
+
+The second and third guessing tests (see ./guesswhat/src/part1.py and ./guesswhat/src/part2.py) involve guessing string permutations of a given length from the provided character set (defined in ./guesswhat/src/common.py). The second test generates random strings of increasing lengths (starting at 2 and ending at 18) from the alphabet ['A', 'B']. The program generates all possible permutations (2^length total permutations) and prints out all but one of them to the console; our task is to figure out which one is missing. This can be easily brute-forced by finding all possible permutations and seeing which one is missing. The third guessing test is very similar to the second, except the character alphabet is now ['A', 'B', 'C', 'D'], meaning that the number of permutations increases for the same string length (4^length total permutations). Oh, and did I mention there is now a time limit? ;)
+
+Finally, the last guessing test (see ./guesswhat/src/part3.py) is the hardest. The program reads the contents of the flag (i.e., the flag contents in between the brackets of ping{...}) and generates all permutations of the flag. Like the previous tests, it prints all permutations except the *real* flag, and we have 15 seconds to find the correct one. Luckily, the time limit doesn't really matter, since exceeding it doesn't prohibit us from getting the flag. After connecting to the challenge server and seeing the printed permutations, we find out that there are 10 characters in the flag: **F28ied9a4n**. That means we have 10! = 3628800 permutations to generate and must find the missing one - a true needle in the haystack!
+
+Okay, enough chatter. The solution code is:
+```Python
+import pexpect
+from src.common import *
+import hashlib
+import time
+import secrets
+
+flag_chars = "F28ied9a4n"
+flags = ["".join(x) for x in itertools.permutations(flag_chars)]
+print("Number of flags = " + str(len(flags)) + "\n")
+
+print("--> Running Exploit Script for pingCTF Challenge \"Guess What\"...")
+
+con = pexpect.spawn('nc guess_what.ctf.knping.pl 20000', timeout=30)
+response = con.expect( ["sha256", pexpect.TIMEOUT, pexpect.EOF] )
+if response == 1:
+    print("----> Exploit Result: Failure (Netcat connection timed out)")
+    exit()
+elif response == 2:
+    print("----> Exploit Result: Failure (Netcat response different than expected response)")
+    exit()
+
+line0 = con.readline().decode()
+
+#For the initial test
+rest = None
+prefix = line0[2:36]
+c = line0[52:116]
+
+print("\nFinding the 3-byte secret value 'rest'...\n")
+
+for i in range(0, 16777216):
+    rest = "{:06x}".format(i)
+    if hashlib.sha256((prefix + rest).encode()).hexdigest() == c:
+        print("--> Sending: " + rest + "\n")
+        break
+
+con.sendline(rest)
+response = con.expect(["Hi, this is my game", pexpect.TIMEOUT, pexpect.EOF])
+if response == 1:
+    print("----> Exploit Result: Failure (Netcat connection timed out)")
+    exit()
+elif response == 2:
+    print("----> Exploit Result: Failure (Netcat response different than expected response)")
+    exit()
+
+line = con.readline().decode()
+print(line, end="")
+line = con.readline().decode()
+print(line, end="")
+line = con.readline().decode()
+print(line, end="")
+
+#Part 1 begins now
+con.sendline()
+
+for i in range(2, 18):
+ 
+    strings = ["".join(x) for x in itertools.product(intro_dictionary, repeat=i)]
+    print("Iteration " + str(i) + ":")
+
+    response = con.expect(["PRINTING...", pexpect.TIMEOUT, pexpect.EOF])
+    if response == 1:
+        print("----> Exploit Result: Failure (Netcat connection timed out)")
+        exit()
+    elif response == 2:
+        print("----> Exploit Result: Failure (Netcat response different than expected response)")
+        exit()
+
+    line = con.readline().decode()
+
+    num_reads = 2**i - 1
+    remaining_strings = []
+    for j in range(0, num_reads):
+        line = con.readline().decode()[0:i]
+        strings.remove(line)
+   
+    line = con.readline().decode()
+    line = con.readline().decode()
+
+    print("--> Sending: " + strings[0] + "\n")
+    con.sendline(strings[0])
+   
+line = con.readline().decode()
+print(line, end="")
+line = con.readline().decode()
+print(line, end="")
+line = con.readline().decode()
+print(line, end="")
+line = con.readline().decode()
+print(line, end="")
+line = con.readline().decode()
+print(line, end="")
+line = con.readline().decode()
+print(line)
+
+#Part 2 begins here
+con.sendline()
+for i in range(2, 6):
+ 
+    strings = ["".join(x) for x in itertools.product(mid_dictionary, repeat=6)]
+    print("Iteration " + str(i) + ":")
+
+    response = con.expect(["PRINTING...", pexpect.TIMEOUT, pexpect.EOF])
+    if response == 1:
+        print("----> Exploit Result: Failure (Netcat connection timed out)")
+        exit()
+    elif response == 2:
+        print("----> Exploit Result: Failure (Netcat response different than expected response)")
+        exit()
+
+    line = con.readline().decode()
+
+    num_reads = 4**6 - 1
+    remaining_strings = []
+    for j in range(0, num_reads):
+        line = con.readline().decode()
+        strings.remove(line[0:6])
+   
+    line = con.readline().decode()
+    line = con.readline().decode()
+
+    print("--> Sending: " + strings[0] + "\n")
+    con.sendline(strings[0])
+   
+#Part 3!!
+line = con.readline().decode()
+print("Line 1: " + line, end="")
+line = con.readline().decode()
+print("Line 2: " + line, end="")
+line = con.readline().decode()
+print("Line 3: " + line, end="")
+
+con.sendline()
+
+response = con.expect(["PRINTING...", pexpect.TIMEOUT, pexpect.EOF])
+if response == 1:
+    print("----> Exploit Result: Failure (Netcat connection timed out)")
+    exit()
+elif response == 2:
+    print("----> Exploit Result: Failure (Netcat response different than expected response)")
+    exit()
+
+flags2 = []
+line = con.readline().decode().rstrip()
+i = 1
+while "DONE PRINTING" not in line:
+    #if line in flags:
+    print(i)
+    flags2.append(line)
+    #flags.remove(line)
+    #else:
+    #    print("Could not find " + line + " in flags.")
+    #    print("line length = " + str(len(line)))
+    line = con.readline().decode().rstrip()
+    i += 1
+print("--> Finished with the processing!")
+print("--> Final flags list size: " + str(len(flags)))
+print("--> Final flags2 list size: " + str(len(flags2)))
+f = list(set(flags) - set(flags2))
+print(f)
+final_flag = "ping{" + flags[0] + "}"
+print("--> Sending: " + final_flag)
+
+line = con.readline().decode()
+print(line, end="")
+line = con.readline().decode()
+print(line, end="")
+line = con.readline().decode()
+print(line, end="")
+line = con.readline().decode()
+print(line, end="")
+line = con.readline().decode()
+print(line)
+
+con.close()
+
+exit()
+```
+
+**Note:** After the competition ended I realized that I forgot to write down the flag anywhere, and have no way to find it without the server being online. Thus the flag here isn't the correct one, but rather it is a permutation of the correct one - this is as close as I can provide at this point.
+
+**Flag:** ```ping{F28ied9a4n}```
