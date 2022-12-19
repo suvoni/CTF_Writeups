@@ -1,4 +1,4 @@
-# pingCTF 2022 Writeup (3rd Place)
+# pingCTF 2022 Writeup (3rd Place Winner)
 Competition URL: https://ctf.knping.pl/
 ## Overview
 
