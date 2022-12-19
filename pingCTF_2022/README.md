@@ -462,3 +462,17 @@ the ```PingPongGame/PingPongGame_Data/Managed/``` folder:
 ![dlls](./pinggame/images/dlls.PNG)
 
 We can launch dnSpy and open ```Assembly-CSharp.dll``` for decompilation and editing. After looking through the various functions and classes for an exploitable method, one promising function I found is the ```OnBallMissed()``` method of the ```GameManager``` class:
+
+![dnspy1](./pinggame/images/dnspy1.PNG)
+
+This method decrements the ```lives``` variable whenever a ball is missed by the racket. What if we could edit this method so that our ```points``` variable increased by 1000 every time? This way, by the time we ran out of lives our point score would be well over the 2022 threshold!
+
+![dnspy2](./pinggame/images/dnspy2.PNG)
+
+Okay, let's save our changes, recompile ```Assembly-CSharp.dll``` and play the game with our new hacks!!
+
+https://user-images.githubusercontent.com/120992983/208362467-1401fcef-c291-4364-a038-ac98bfed5732.mp4
+
+Wait a second - our score is increasing as expected, yet we didn't get the flag!? And running the game again brings up the following message:
+
+![denied](./pinggame/images/denied.PNG)
