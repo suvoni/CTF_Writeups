@@ -837,6 +837,7 @@ f.close()
 After about 15 minutes running on my machine, I luckily found the flag after only ~10% of the possible combinations were computed.
 
 **Output:**
+
 ![opa_output](./opa/opa_output.PNG)
 
 **Flag:** ```ping{too_late_you_will_never_find_her_and_my_son}```
