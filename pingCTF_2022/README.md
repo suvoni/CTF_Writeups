@@ -391,8 +391,9 @@ exit()
 
 ## 5) secret formula
 In this challenge, we are given a cryptic series of instructions from a mysterious figure named "Heisenberg" that seem to relate to chemistry and mixing together various elements. Breaking Bad vibes, anyone? :)
-```
+
 **Secret Formula Instructions:**
+```
 1. First add Gluon
 2. Then add a post-transition metal that weighs exactly 114,818u
 3. Next, you need some Alkali metal from period 7 (don't mistake with group)
@@ -406,7 +407,9 @@ In this challenge, we are given a cryptic series of instructions from a mysterio
 11. Leave it for 30.2 minutes according to Bernard Courtois Guide Book
 12. Remember also to add a little of the lightest halogen
 ```
+
 Looking at what all the instructions have in common, it becomes pretty clear that logically, each instruction must refer to a small part of the flag which combines with the other parts to form the whole flag. This suspicion is confirmed by observing that most of these instructions refer to chemical elements or elementary particles which have well-known symbols associated with them (Gluons = g, Indium = In, Sulfur = S, etc.). Even if initially we don't know every single one, that is where Google can come in handy to help us out. After doing some research (with most of the clues you can just paste into Google and quickly find the associated element), we come up with the following character mapping:
+
 ```
 1. g (Gluon symbol)
 2. In (Indium symbol)
@@ -421,6 +424,7 @@ Looking at what all the instructions have in common, it becomes pretty clear tha
 11. I (Iodine symbol, Bernard Courtois is the discoverer of Iodine)
 12. F (Fluorine symbol)
 ```
+
 Additionally, a secret message was provided which consisted of a sequence of integers:
 
 ```116 124 111 147 116 152 125 147 116 155 121 147 116 152 125 147 116 155 121 147 116 152 111 147 116 152 125 147 116 172 111 147 115 152 101 147 116 172 121 147 116 152 147 147 116 152 105 147 116 172 121 147 115 152 101 147 116 152 125 147 116 172 131 147 116 152 125 147 116 172 111 147 116 172 153 147 116 172 121 147 116 152 147 147 116 152 153 147 116 155 125 147 116 152 143 147 115 152 101 147 116 172 153 147 116 155 131 147 116 172 125 147 115 152 101 147 116 152 121 147 116 155 131 147 115 152 101 147 116 155 125 147 116 152 125 147 116 152 125 147 116 152 121 147 116 172 115 147 115 152 101 147 116 172 121 147 116 155 131 147 115 152 101 147 116 152 143 147 116 155 131 147 115 152 101 147 116 152 111 147 116 152 105 147 116 152 115 147 116 155 111 147 116 172 143 147 116 152 105 147 116 172 111 147 116 152 121 147 116 172 115 147 115 155 125 75```
