@@ -13,7 +13,7 @@ Competition URL: https://ctf.knping.pl/
 | ping game | Misc | ping{sdgh4wmh_gg_wp_2022} |
 | toss a coin to your witcher | Crypto | ping{LAMBERT_WHAT_A_PRICK} |
 | kind (1/3) | Crypto | ping{can_you_find_my_dad} |
-| vater (2/3) | Crypto | |
+| vater (2/3) | Crypto | ping{it_was_my_vader_who_killed_my_wife} |
 | opa (3/3) | Crypto | |
 
 ## 1) Baby Rev
@@ -622,9 +622,11 @@ The image gives us the following information:
 
 The image leaves out the following information:
 - The type of reflector ```(UKW-B or UKW-C)```
-- The configuration of the second and third rotors ```(I-VIII)```
+- The configuration of the second and third rotors ```(I-VIII) (I-VIII)```
 
 Thus, it's clear that our goal is to brute force the missing information to determine the exact Enigma Machine configuration that decodes the ciphertext into a coherent plaintext. To automate this process, I use the [aenig4](https://jorgicor.niobe.org/aenig4/) command line utility to easily emulate the Enigma Machine logic. This command line utility takes as its command line arguments the parameters discussed above (rotor configuration, ring and rotor starting positions, plugboard configurations, etc.) and outputs the decoded plaintext. Using this tool, I wrote a Python script to efficiently brute force the flag.
+
+Let's do a little complexity analysis before we begin - how many combinations will we have to go through? We are brute forcing the reflector with 2 possibilities and 2 rotors with 8 possible configurations each --> ```2*8*8 = 128``` combinations. Not too bad, eh?
 
 **Python Solution:**
 ```Python
@@ -670,3 +672,93 @@ f.close()
 **Output:** ```--> Potential Answer: pingcanyoufindmydad```
 
 **Flag:** ```ping{can_you_find_my_dad}```
+
+# 10) vater (2/3)
+We are given another Enigma Machine with certain parameters blotted out:
+
+![vater](./vater/vater_crypto.png)
+
+The image gives us the following information:
+- The type of Enigma Machine ```(M4)```
+- The configuration of the first rotor ```(Beta)```
+- The first two ring positions ```(18 14)```
+- The rotor positions ```(T H G B)```
+- The plugboard configurations ```(WH AT RE YU LO KI NG FS QX CM)```
+- The ciphertext ```qtdaxvuvzxwbojdcatgxzpawfhenoor```
+
+The image leaves out the following information:
+- The type of reflector ```(UKW-B or UKW-C)```
+- The configuration of the second, third, and fourth rotors ```(I-VIII) (I-VIII) (I-VIII)```
+- The third and fourth ring positions ```(1-26) (1-26)```
+
+This time, the complexity of the problem has increased a bit. Instead of using an M3 machine (which only has 3 rotors) we are now using an M4 machine (which has 4 - the extra rotor is called Beta/Gamma, depending on which one is chosen). Additionally, more information is missing this time, 3 rotor configurations and 2 ring positions. This means that there are more possible combinations of configurations possible and thus our brute force approach might take longer. 
+
+Let's once again do some complexity analysis. We are brute forcing the reflector which has 2 possibilities, 3 rotor configurations with 8 possibilities each, and 2 ring positions with 26 possibilities each --> ```2*8*8*8*26*26 = 692224``` combinations. This is quite a bit more than previous, no? (Note that this is an upper limit, since technically rotors can not be repeated, e.g. III III III is not allowed, nor I I III, but I II III is allowed. This is just an approximation for us to eyeball our performance).
+
+**Python Solution:**
+```Python
+import subprocess
+
+reflectors = ['b', 'c']
+rotors = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII']
+rings = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26']
+
+f = open('out.txt', 'w')
+
+num_combinations = len(reflectors) * len(rotors)**3 * len(rings)**2
+print("Total number of combinations: " + str(num_combinations) + '\n')
+
+count = 0
+
+for ref in reflectors:
+    for rot1 in rotors:
+        for rot2 in rotors:
+
+            #Aenig4 does not allow repeated rotors
+            if rot2 == rot1:
+                continue
+
+            for rot3 in rotors:
+            
+                #Aenig4 does not allow repeated rotors
+                if rot3 == rot1 or rot3 == rot2:
+                    continue
+                
+                for ring3 in rings:
+                    for ring4 in rings:
+                        
+                        count += 1
+                        if count % 100000 == 0:
+                            print("--> " + str(count) + " messages decoded...")
+
+                        #For the given reflector/rotor/ring configuration, attempt to decode the ciphertext
+                        #in source.txt using the M4 Enigma machine
+                        command = 'aenig4 -k \"' + ref + ' Beta ' + rot1 + ' ' + rot2 + ' ' + rot3 + ' 18 14 '
+                        command = command + ring3 + ' ' + ring4 + ' THGB WH AT RE YU LO KI NG FS QX CM\" source.txt dest.txt'
+                        output = subprocess.getoutput(command)
+
+                        #Now read the output from 'dest.txt' and write it to the culmulative output file
+                        f2 = open('dest.txt', 'r')
+                        decrypted = f2.readline()
+                        f.write(decrypted)
+                        f2.close()
+
+                        if decrypted[0:4] == "ping":
+                            print('--> Potential Answer: ' + decrypted)
+f.close()
+```
+
+**Output:**
+```
+Total number of combinations: 692224
+--> Potential Answer: pingqqwsjhhercobozcrwvsghwvzrsf
+--> 100000 messages decoded...
+--> 200000 messages decoded...
+--> 300000 messages decoded...
+--> Potential Answer: pingitwasmyvaderwhokilledmywife
+...
+```
+As you can see, as we start brute forcing large numbers of combinations, we'll start getting some "false positives", i.e. some outputs which start with ```ping``` but aren't actually the plaintext. This is simply due to randomness and probability, so we have to sift through the outputs to find the correct flag, which we can easily see is ```pingitwasmyvaderwhokilledmywife```.
+
+**Flag:** ```ping{it_was_my_vader_who_killed_my_wife}```
+
