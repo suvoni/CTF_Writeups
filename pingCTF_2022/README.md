@@ -485,39 +485,38 @@ The inspiration from this idea comes from looking at the ```OnCollisionEnter()``
 
 ```C#
 public void OnCollisionEnter(Collision collision)
+{
+	if (collision.gameObject.tag == "Racket" && UnityEngine.Object.FindObjectOfType<GameManager>().IsGameOn)
 	{
-		if (collision.gameObject.tag == "Racket" && UnityEngine.Object.FindObjectOfType<GameManager>().IsGameOn)
+		UnityEngine.Object.FindObjectOfType<GameManager>().points += this.ballId;
+		UnityEngine.Object.FindObjectOfType<GameManager>().SoundsManager.PlaySound();
+		UnityEngine.Object.FindObjectOfType<GameManager>().ballsHit.Add(this.ballId);
+		base.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+
+      		//Some other stuff...
+
+		num += list[this.ballId - 1];
+		GameObject.FindGameObjectWithTag("Verifier").transform.Translate(0f, (float)num, 0f);
+		this.isActive = false;
+		if (UnityEngine.Object.FindObjectOfType<GameManager>().UseCameraShake)
 		{
-			UnityEngine.Object.FindObjectOfType<GameManager>().points += this.ballId;
-			UnityEngine.Object.FindObjectOfType<GameManager>().SoundsManager.PlaySound();
-			UnityEngine.Object.FindObjectOfType<GameManager>().ballsHit.Add(this.ballId);
-			base.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
-
-      //Some other stuff...
-
-			num += list[this.ballId - 1];
-			GameObject.FindGameObjectWithTag("Verifier").transform.Translate(0f, (float)num, 0f);
-			this.isActive = false;
-			if (UnityEngine.Object.FindObjectOfType<GameManager>().UseCameraShake)
-			{
-				CameraShake.Shake(0.2f, 0.1f);
-			}
+			CameraShake.Shake(0.2f, 0.1f);
 		}
 	}
+}
 
-	// Token: 0x06000005 RID: 5 RVA: 0x000028C0 File Offset: 0x00000AC0
-	public void OnTriggerEnter(Collider collider)
+// Token: 0x06000005 RID: 5 RVA: 0x000028C0 File Offset: 0x00000AC0
+public void OnTriggerEnter(Collider collider)
+{
+	if (collider.gameObject.tag == "Barrier" && UnityEngine.Object.FindObjectOfType<GameManager>().IsGameOn)
 	{
-		if (collider.gameObject.tag == "Barrier" && UnityEngine.Object.FindObjectOfType<GameManager>().IsGameOn)
-		{
-			//Some other stuff...
-      
-			num += list[this.ballId - 1];
-			GameObject.FindGameObjectWithTag("Verifier").transform.Translate((float)num, 0f, 19f);
-			UnityEngine.Object.FindObjectOfType<GameManager>().ballsMissed.Add(this.ballId);
-			UnityEngine.Object.FindObjectOfType<GameManager>().LifeIndicatorsManager.SetOffRandomIndicator();
-			UnityEngine.Object.FindObjectOfType<GameManager>().OnBallMissed();
-		}
+		//Some other stuff...
+		
+		num += list[this.ballId - 1];
+		GameObject.FindGameObjectWithTag("Verifier").transform.Translate((float)num, 0f, 19f);
+		UnityEngine.Object.FindObjectOfType<GameManager>().ballsMissed.Add(this.ballId);
+		UnityEngine.Object.FindObjectOfType<GameManager>().LifeIndicatorsManager.SetOffRandomIndicator();
+		UnityEngine.Object.FindObjectOfType<GameManager>().OnBallMissed();
 	}
 }
 ```
