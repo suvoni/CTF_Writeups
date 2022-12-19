@@ -475,4 +475,49 @@ https://user-images.githubusercontent.com/120992983/208362467-1401fcef-c291-4364
 
 Wait a second - our score is increasing as expected, yet we didn't get the flag!? And running the game again brings up the following message:
 
-![denied](./pinggame/images/denied.PNG)
+![denied](./pinggame/images/denied.png)
+
+As it turns out, there is an anti-cheat system in place which detects obvious cheating attempts like ours. Whenever it detects blatant cheating, it prohibits our score from reaching the server and refuses to grant the flag. Thus, we need to be more subtle and intelligent about our cheating attempts to bypass the anti-cheat logic.
+
+So what was wrong with the previous approach? By increasing the score by increments of 1000 so rapidly, the anti-cheat engine likely detected the vast disparity between the amount of points gained and the impossibly small amount of balls/time it took to reach that score. A more intelligent approach would be to not touch the score directly, but rather in an indirect way that can bypass the anti-cheat engine. One way to do this is to change the collision logic so that it is impossible for the ball to "miss" the racket!
+
+The inspiration from this idea comes from looking at the ```OnCollisionEnter()``` and ```OnTriggerEnter()``` methods of the ```BallController``` class:
+
+```C#
+public void OnCollisionEnter(Collision collision)
+	{
+		if (collision.gameObject.tag == "Racket" && UnityEngine.Object.FindObjectOfType<GameManager>().IsGameOn)
+		{
+			UnityEngine.Object.FindObjectOfType<GameManager>().points += this.ballId;
+			UnityEngine.Object.FindObjectOfType<GameManager>().SoundsManager.PlaySound();
+			UnityEngine.Object.FindObjectOfType<GameManager>().ballsHit.Add(this.ballId);
+			base.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+
+      //Some other stuff...
+
+			num += list[this.ballId - 1];
+			GameObject.FindGameObjectWithTag("Verifier").transform.Translate(0f, (float)num, 0f);
+			this.isActive = false;
+			if (UnityEngine.Object.FindObjectOfType<GameManager>().UseCameraShake)
+			{
+				CameraShake.Shake(0.2f, 0.1f);
+			}
+		}
+	}
+
+	// Token: 0x06000005 RID: 5 RVA: 0x000028C0 File Offset: 0x00000AC0
+	public void OnTriggerEnter(Collider collider)
+	{
+		if (collider.gameObject.tag == "Barrier" && UnityEngine.Object.FindObjectOfType<GameManager>().IsGameOn)
+		{
+			//Some other stuff...
+      
+			num += list[this.ballId - 1];
+			GameObject.FindGameObjectWithTag("Verifier").transform.Translate((float)num, 0f, 19f);
+			UnityEngine.Object.FindObjectOfType<GameManager>().ballsMissed.Add(this.ballId);
+			UnityEngine.Object.FindObjectOfType<GameManager>().LifeIndicatorsManager.SetOffRandomIndicator();
+			UnityEngine.Object.FindObjectOfType<GameManager>().OnBallMissed();
+		}
+	}
+}
+```
