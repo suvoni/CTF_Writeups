@@ -450,14 +450,15 @@ Eureka! This clue is telling us to take the characters we found from the instruc
 ## 7) ping game
 In this challenge, we are given a Unity Ping Pong application with the flag hidden within the game. The one piece of information we are given is that beating the game master's high score (2022) will yield a special reward, which we can assume to be the flag.
 
-After downloading and running the game, it is a good idea to simply try out the game and see what it is like. Opening the game shows a character customization menu and a normal main menu page with several interactive pages:
-
-![main_menu](./pinggame/images/main_menu.png)
-
-Playing the game for the first time, I realized it would be quite difficult to reach a score of 2022:
+After downloading and running the game, it is a good idea to simply try out the game and see what it is like. Opening the game shows a character customization menu and a normal main menu page with several interactive pages. Clicking ```Play``` starts the game, and playing it a few times reveals how difficult it would be to legitimately reach a score of 2022:
 
 https://user-images.githubusercontent.com/120992983/208358449-e918d722-4d4a-489a-8781-41c97d12d455.mp4
 
-So, it seems our only course of action is to hack the game!
+Thus, it seems our only course of action is to hack the game!
 
-[dnSpy](https://github.com/dnSpy/dnSpy) can be used to decompile .NET and Unity assemblies, like the ones used in this Ping Pong application. In particular, we want to decompile and edit the 
+[dnSpy](https://github.com/dnSpy/dnSpy) can be used to decompile .NET and Unity assemblies, like the ones used in this Ping Pong application. In particular, we want to decompile and edit the ```Assembly-CSharp.dll``` file which contains the in-game functions and control logic of the game. This file is located in 
+the ```PingPongGame/PingPongGame_Data/Managed/``` folder:
+
+![dlls](./pinggame/images/dlls.PNG)
+
+We can launch dnSpy and open ```Assembly-CSharp.dll``` for decompilation and editing. After looking through the various functions and classes for an exploitable method, one promising function I found is the ```OnBallMissed()``` method of the ```GameManager``` class:
