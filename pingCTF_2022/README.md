@@ -613,9 +613,9 @@ Probably the hardest part of this challenge is figuring out what type of cipher 
 If you're unfamiliar with how Enigma Machines operate, I highly recommend the resources found [here](https://www.codesandciphers.org.uk/enigma/) and [here](http://kerryb.github.io/enigma/). They are, at their core, very sophisticated substitution ciphers layered on top of one another and are very good to know about if you're interested in cryptography.
 
 The image gives us the following information:
-- The type of Enigma Machine ```(Model M3)```
+- The type of Enigma Machine ```(M3)```
 - The configuration of the first rotor ```(III)```
 - The ring positions ```(10 6 9)```
-- The rotor positions ```(7 15 12 --> G O L)```
+- The rotor positions ```(7 15 12) --> (G O L)```
 - The plugboard configurations ```(GI VE TO YB AC KP LZ XR QH FN)```
 - The ciphertext ```gjmsjnjbijovlrcnkem```
