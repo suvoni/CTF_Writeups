@@ -11,6 +11,7 @@ Competition URL: https://ctf.knping.pl/
 | guess what | Misc | ping{F28ied9a4n} |
 | secret formula | Misc | ping{FINdgUSTaVOFrIng} |
 | ping game | Misc | ping{sdgh4wmh_gg_wp_2022} |
+| toss a coin to your witcher | Crypto |
 
 ## 1) Baby Rev
 In this simple reverse engineering challenge, we are given an ELF64 executable named ```babyrev``` to analyze. Opening it up in Ghidra or IDA, we can easily find a red herring function named ```checkflag``` and decompile it:
@@ -583,8 +584,12 @@ It's rather clear that this is a cipher of some sort, and after plugging this in
 
 ![dcode](./tossacointoyourwitcher/dcode.PNG)
 
-Even though we don't know the key, there are known methods of breaking the Vigenere Cipher with just knowing the key length: this is called [Kasiski Analysis](https://en.wikipedia.org/wiki/Kasiski_examination). Kasiski Analysis takes advantage of the fact that in a Vigenere Cipher the key is repeated, and thus repeated string subsequences in the plaintext are likely to be repeated as well in the ciphertext (assuming the length of the key is relatively small in comparison to the length of the plaintext). By finding many instances of repeated *n-graphs* in the ciphertext we can work backwards to deduce the key length and subsequently break the cipher with frequency analysis.
+Even though we don't know the key, there are known methods of breaking the Vigenere Cipher with just knowing the key length: this is called [Kasiski Analysis](https://en.wikipedia.org/wiki/Kasiski_examination). Kasiski Analysis takes advantage of the fact that in a Vigenere Cipher the key is repeated, and thus repeated string subsequences in the plaintext are likely to be repeated as well in the ciphertext (assuming the length of the key is relatively small in comparison to the length of the plaintext). By finding many instances of repeated *n*-graphs in the ciphertext we can work backwards to deduce the key length and subsequently break the cipher with frequency analysis.
 
 Luckily for us, there are [free online tools](https://crypto.interactive-maths.com/kasiski-analysis-breaking-the-code.html) available that can do all this work for us! :D
 
 The Crypto Corner tool linked above can automatically find repeated sequences and deduce the most probable key length. Inputing the ciphertext into the tool yields the following results:
+
+![sequences](./tossacointoyourwitcher/sequences.PNG)
+
+By far the most repeated *n*-graphs occurred at multiples of 17 characters apart, so this is most likely our key length. We can use the [Dcode Vigenere Cipher decoder](https://www.dcode.fr/vigenere-cipher) with a known key length of 17 to decrypt the message:
