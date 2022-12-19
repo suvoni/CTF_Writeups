@@ -604,3 +604,18 @@ The decrypted plaintext and the key are output on the left! The plaintext is fai
 **Flag:** ```ping{LAMBERT_WHAT_A_PRICK}```
 
 # 9) kind (1/3)
+We are given the following image:
+
+![kind](./kind/kind_crypto.png)
+
+This image displays a strange cipher with certain parts blotted out. Probably the hardest part of this challenge is figuring out what type of cipher it is, because although it is a unique one, it is rather uncommon. It turns out that this is the famous [Enigma Cipher](https://en.wikipedia.org/wiki/Enigma_machine) which the Germans invented in World War 2 that was eventually broken by the Polish, French, and British. The most obvious giveaway in the image that this is an Enigma Machine is the ```M3``` and ```UKW``` which denote the type of Enigma machine and the type of reflector used, respectively.
+
+If you're unfamiliar with how Enigma Machines operate, I highly recommend the resources found [here](https://www.codesandciphers.org.uk/enigma/) and [here](http://kerryb.github.io/enigma/). They are, at their core, very sophisticated substitution ciphers layered on top of one another and are very good to know about if you're interested in cryptography.
+
+The image gives us the following information:
+- The type of Enigma Machine ```(Model M3)```
+- The configuration of the first rotor ```(III)```
+- The ring positions ```(10 6 9)```
+- The rotor positions ```(7 15 12 --> G O L)```
+- The plugboard configurations ```(GI VE TO YB AC KP LZ XR QH FN)```
+- The ciphertext ```gjmsjnjbijovlrcnkem```
