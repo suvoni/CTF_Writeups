@@ -619,3 +619,54 @@ The image gives us the following information:
 - The rotor positions ```(7 15 12) --> (G O L)```
 - The plugboard configurations ```(GI VE TO YB AC KP LZ XR QH FN)```
 - The ciphertext ```gjmsjnjbijovlrcnkem```
+
+The image leaves out the following information:
+- The type of reflector ```(UKW-B or UKW-C)```
+- The configuration of the second and third rotors ```(I-VIII)```
+
+Thus, it's clear that our goal is to brute force the missing information to determine the exact Enigma Machine configuration that decodes the ciphertext into a coherent plaintext. To automate this process, I use the [aenig4](https://jorgicor.niobe.org/aenig4/) command line utility to easily emulate the Enigma Machine logic. This command line utility takes as its command line arguments the parameters discussed above (rotor configuration, ring and rotor starting positions, plugboard configurations, etc.) and outputs the decoded plaintext. Using this tool, I wrote a Python script to efficiently brute force the flag.
+
+**Python Solution:**
+```Python
+import subprocess
+
+reflectors = ['b', 'c']
+rotors = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII']
+
+f = open('out.txt', 'w')
+t = None
+
+for ref in reflectors:
+    for rot2 in rotors:
+        for rot3 in rotors:
+
+            #Aenig4 does not allow repeated rotors
+            if rot2 == rot3:
+                continue
+
+            if ref == 'b':
+                t = 'Beta'
+            else:
+                t = 'Gamma'
+
+            #For the given reflector/rotor/ring configuration, attempt to decode the ciphertext
+            #in source.txt using the M4 Enigma machine
+            command = 'aenig4 -k \"' + ref + ' ' + t + ' III ' + rot2 + ' ' + rot3 + ' 1 10 6 9 '
+            command = command + 'AGOL GI VE TO YB AC KP LZ XR QH FN\" source.txt dest.txt'
+            output = subprocess.getoutput(command)
+
+            #Now read the output from 'dest.txt' and write it to the culmulative output file
+            f2 = open('dest.txt', 'r')
+            decrypted = f2.readline()
+            f.write(decrypted)
+            f2.close()
+
+            if(decrypted[0:4] == 'ping'):
+                print('--> Potential Answer: ' + decrypted)
+
+f.close()
+```
+
+**Output:** ```--> Potential Answer: pingcanyoufindmydad```
+
+**Flag:** ```ping{can_you_find_my_dad}```
