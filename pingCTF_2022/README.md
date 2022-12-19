@@ -504,7 +504,6 @@ public void OnCollisionEnter(Collision collision)
 	}
 }
 
-// Token: 0x06000005 RID: 5 RVA: 0x000028C0 File Offset: 0x00000AC0
 public void OnTriggerEnter(Collider collider)
 {
 	if (collider.gameObject.tag == "Barrier" && UnityEngine.Object.FindObjectOfType<GameManager>().IsGameOn)
@@ -553,3 +552,11 @@ public void OnTriggerEnter(Collider collider)
 	}
 }
 ```
+Now, finally, let's save our changes, recompile ```Assembly-CSharp.dll``` and see if our new version works!
+(Video sped up and trimmed to fit within the markdown!)
+
+https://user-images.githubusercontent.com/120992983/208371117-0ca4c3f0-7d4c-4914-b264-6a3a07781b90.mp4
+
+**Flag:** ```ping{sdgh4wmh_gg_wp_2022}```
+
+# 8) 
