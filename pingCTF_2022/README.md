@@ -172,7 +172,7 @@ Bingo! The password is thus ```1234567```. Unlocking the Excel file, we see the 
 
 ![excel1](./highschoolgrades/excel1.PNG)
 
-These are the student grades that the challenge description told us about. At first glance, there really isn't anything suspicious going on here. After doing a lot of close searching, we discover that there is hidden data within 2 cells:
+These are the student grades that the challenge description told us about. At first glance, there really isn't anything suspicious going on here. However, after doing a lot of close searching, we discover that there is hidden data within 2 cells:
 
 ![phoebe1](./highschoolgrades/phoebe1.PNG)
 
