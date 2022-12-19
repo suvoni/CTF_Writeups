@@ -9,6 +9,7 @@ Competition URL: https://ctf.knping.pl/
 | high school grades | Misc | ping{sosmart,right?} |
 | welcome | Misc | ping{W3lc0m3_t0_p1ngCTF_2022!_3c08b6c9a06c7db} |
 | guess what | Misc | ping{F28ied9a4n} |
+| secret formula | Misc | ping{FINdgUSTaVOFrIng} |
 
 ## 1) Baby Rev
 In this simple reverse engineering challenge, we are given an ELF64 executable named ```babyrev``` to analyze. Opening it up in Ghidra or IDA, we can easily find a red herring function named ```checkflag``` and decompile it:
