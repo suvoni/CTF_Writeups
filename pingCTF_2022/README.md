@@ -691,7 +691,7 @@ The image leaves out the following information:
 - The configuration of the second, third, and fourth rotors ```(I-VIII) (I-VIII) (I-VIII)```
 - The third and fourth ring positions ```(1-26) (1-26)```
 
-This time, the complexity of the problem has increased a bit. Instead of using an M3 machine (which only has 3 rotors) we are now using an M4 machine (which has 4 - the extra rotor is called Beta/Gamma, depending on which one is chosen). Additionally, more information is missing this time, 3 rotor configurations and 2 ring positions. This means that there are more possible combinations of configurations possible and thus our brute force approach might take longer. 
+This time, the complexity of the problem has increased. Instead of using an M3 machine (which only has 3 rotors) we are now using an M4 machine (which has 4 - the extra rotor is called Beta/Gamma, depending on which one is chosen). Additionally, more information is missing this time, 3 rotor configurations and 2 ring positions. This means that there are more possible combinations of configurations possible and thus our brute force approach might take longer. 
 
 Let's once again do some complexity analysis. We are brute forcing the reflector which has 2 possibilities, 3 rotor configurations with 8 possibilities each, and 2 ring positions with 26 possibilities each --> ```2*8*8*8*26*26 = 692224``` combinations. This is quite a bit more than previous, no? (Note that this is an upper limit, since technically rotors can not be repeated, e.g. III III III is not allowed, nor I I III, but I II III is allowed. This is just an approximation for us to eyeball our performance).
 
