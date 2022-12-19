@@ -187,4 +187,8 @@ It looks like Phoebe Velez is our culprit! The hidden data in the two cells is `
 
 The following clue is available on the rules page of the pingCTF Discord server:
 
-![discord]()
+![discord](./welcome/discord.PNG)
+
+Going to the pingCTF Facebook page and messaging ```!flag``` to the bot will cause the bot to ask you if you liked their fanpage and Twitter. After saying yes to both questions, the bot will grant you the flag:
+
+![facebook](./welcome/facebook.PNG)
