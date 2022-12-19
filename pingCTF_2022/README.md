@@ -388,3 +388,57 @@ exit()
 **Note:** After the competition ended I realized that I forgot to write down the flag anywhere, and have no way to find it without the server being online. Thus the flag here isn't the correct one, but rather it is a permutation of the correct one - this is as close as I can provide at this point.
 
 **Flag:** ```ping{F28ied9a4n}```
+
+## 5) secret formula
+In this challenge, we are given a cryptic series of instructions from a mysterious figure named "Heisenberg" that seem to relate to chemistry and mixing together various elements. Breaking Bad vibes, anyone? :)
+
+**Secret Formula Instructions:**
+1. First add Gluon
+2. Then add a post-transition metal that weighs exactly 114,818u
+3. Next, you need some Alkali metal from period 7 (don't mistake with group)
+4. Something with atomic number 8
+5. Afterwards, remember to add the metal with melting point 2173,15K
+6. I hope you still remember the villain from Greek mythology, the son of Zeus and Plouto
+7. You also can't forget about lemon yellow sintered microcrystals
+8. Afterwards, we add CAS 7440-61-1
+9. While mixing all ingredients, add again some Gluon
+10. Keep that away from very strong magnets!
+11. Leave it for 30.2 minutes according to Bernard Courtois Guide Book
+12. Remember also to add a little of the lightest halogen
+
+Looking at what all the instructions have in common, it becomes pretty clear that logically, each instruction must refer to a small part of the flag which combines with the other parts to form the whole flag. This suspicion is confirmed by observing that most of these instructions refer to chemical elements or elementary particles which have well-known symbols associated with them (Gluons = g, Indium = In, Sulfur = S, etc.). Even if initially we don't know every single one, that is where Google can come in handy to help us out. After doing some research (with most of the clues you can just paste into Google and quickly find the associated element), we come up with the following character mapping:
+
+1. g (Gluon symbol)
+2. In (Indium symbol)
+3. Fr (Francium symbol)
+4. O (Oxygen symbol)
+5. V (Vanadium symbol)
+6. Ta (Tantalum symbol)
+7. S (Sulfur symbol)
+8. U (Uranium symbol)
+9. g (Gluon symbol)
+10. Nd (Neodymium symbol, Neodymium magnets are known to be the very strongest magnets)
+11. I (Iodine symbol, Bernard Courtois is the discoverer of Iodine)
+12. F (Fluorine symbol)
+
+Additionally, a secret message was provided which consisted of a sequence of integers:
+
+```116 124 111 147 116 152 125 147 116 155 121 147 116 152 125 147 116 155 121 147 116 152 111 147 116 152 125 147 116 172 111 147 115 152 101 147 116 172 121 147 116 152 147 147 116 152 105 147 116 172 121 147 115 152 101 147 116 152 125 147 116 172 131 147 116 152 125 147 116 172 111 147 116 172 153 147 116 172 121 147 116 152 147 147 116 152 153 147 116 155 125 147 116 152 143 147 115 152 101 147 116 172 153 147 116 155 131 147 116 172 125 147 115 152 101 147 116 152 121 147 116 155 131 147 115 152 101 147 116 155 125 147 116 152 125 147 116 152 125 147 116 152 121 147 116 172 115 147 115 152 101 147 116 172 121 147 116 155 131 147 115 152 101 147 116 152 143 147 116 155 131 147 115 152 101 147 116 152 111 147 116 152 105 147 116 152 115 147 116 155 111 147 116 172 143 147 116 152 105 147 116 172 111 147 116 152 121 147 116 172 115 147 115 155 125 75```
+
+These numbers are ASCII code, so converting them to their equivalent characters yields:
+
+```NTIgNjUgNmQgNjUgNmQgNjIgNjUgNzIgMjAgNzQgNjggNjEgNzQgMjAgNjUgNzYgNjUgNzIgNzkgNzQgNjggNjkgNmUgNjcgMjAgNzkgNmYgNzUgMjAgNjQgNmYgMjAgNmUgNjUgNjUgNjQgNzMgMjAgNzQgNmYgMjAgNjcgNmYgMjAgNjIgNjEgNjMgNmIgNzcgNjEgNzIgNjQgNzMgMmU=```
+
+This is clearly a Base64 encoded string (notice the ```=``` sign on the end!). Decoding it yields:
+
+```52 65 6d 65 6d 62 65 72 20 74 68 61 74 20 65 76 65 72 79 74 68 69 6e 67 20 79 6f 75 20 64 6f 20 6e 65 65 64 73 20 74 6f 20 67 6f 20 62 61 63 6b 77 61 72 64 73 2e```
+
+This looks like a hex encoding, doesn't it? Let's decode this one more time to ASCII:
+
+```Remember that everything you do needs to go backwards.```
+
+Eureka! This clue is telling us to take the characters we found from the instructions and piece them together backwards to find the flag! Doing so results in ```FINdgUSTaVOFrIng```, which seems quite appropriate considering all the Breaking Bad references :D
+
+**Flag:** ```ping{FINdgUSTaVOFrIng}```
+
+## 6)
