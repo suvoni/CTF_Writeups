@@ -17,7 +17,7 @@ Competition URL: https://ctf.knping.pl/
 | vater (2/3) | Crypto | ping{it_was_my_vader_who_killed_my_wife} |
 | opa (3/3) | Crypto | ping{too_late_you_will_never_find_her_and_my_son} |
 
-## 1) Baby Rev
+## 1) baby rev
 In this simple reverse engineering challenge, we are given an ELF64 executable named ```babyrev``` to analyze. Opening it up in Ghidra or IDA, we can easily find a red herring function named ```checkflag``` and decompile it:
 ```C
 __int64 __fastcall checkflag(_BYTE *a1)
