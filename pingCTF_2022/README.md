@@ -11,6 +11,7 @@ Competition URL: https://ctf.knping.pl/
 | guess what | Misc | ping{4nF8ai2e9d} |
 | secret formula | Misc | ping{FINdgUSTaVOFrIng} |
 | ping game | Misc | ping{sdgh4wmh_gg_wp_2022} |
+| dialog | Crypto | ping{B451c5_0f_3ncrypt10n_t00_345y?-K3y_r3tr13v3d!} |
 | toss a coin to your witcher | Crypto | ping{LAMBERT_WHAT_A_PRICK} |
 | kind (1/3) | Crypto | ping{can_you_find_my_dad} |
 | vater (2/3) | Crypto | ping{it_was_my_vader_who_killed_my_wife} |
@@ -634,7 +635,14 @@ https://user-images.githubusercontent.com/120992983/208371117-0ca4c3f0-7d4c-4914
 
 **Flag:** ```ping{sdgh4wmh_gg_wp_2022}```
 
-# 8) toss a coin to your witcher
+# 8) dialog
+In this challenge, we are given a Python program ```app.py``` (included in ```./dialog/app.py```) which implements a simple encryption/decryption scheme. In this scheme, each character in the key/flag is added (encryption) or subtracted (decryption) modulo 256 to/from the corresponding character of the input. The code is shown below:
+
+```Python
+
+```
+
+# 9) toss a coin to your witcher
 We are given the following conversation between Geralt and Jaskier (characters from the popular game 'The Witcher'):
 ```
 Jaskier: 
@@ -674,7 +682,7 @@ The decrypted plaintext and the key are output on the left! The plaintext is fai
 
 **Flag:** ```ping{LAMBERT_WHAT_A_PRICK}```
 
-# 9) kind (1/3)
+# 10) kind (1/3)
 We are given the following image, which displays a strange cipher with certain parts blotted out:
 
 ![kind](./kind/kind_crypto.png)
@@ -744,7 +752,7 @@ f.close()
 
 **Flag:** ```ping{can_you_find_my_dad}```
 
-# 10) vater (2/3)
+# 11) vater (2/3)
 We are given another Enigma Machine with certain parameters blotted out:
 
 ![vater](./vater/vater_crypto.png)
@@ -833,7 +841,7 @@ As you can see, as we start brute forcing large numbers of combinations, we'll s
 
 **Flag:** ```ping{it_was_my_vader_who_killed_my_wife}```
 
-# 11) opa (3/3)
+# 12) opa (3/3)
 We are, yet again, given an Enigma Machine with certain parameters blotted out:
 
 ![opa](./opa/opa_crypto.png)
