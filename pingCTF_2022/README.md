@@ -8,7 +8,7 @@ Competition URL: https://ctf.knping.pl/
 | crypto    | Rev | ping{3n1gm4_fl4sh_b4ck5_d0_y0u_r3c4ll?} |
 | high school grades | Misc | ping{sosmart,right?} |
 | welcome | Misc | ping{W3lc0m3_t0_p1ngCTF_2022!_3c08b6c9a06c7db} |
-| guess what | Misc | ping{F28ied9a4n} |
+| guess what | Misc | ping{4nF8ai2e9d} |
 | secret formula | Misc | ping{FINdgUSTaVOFrIng} |
 | ping game | Misc | ping{sdgh4wmh_gg_wp_2022} |
 | toss a coin to your witcher | Crypto | ping{LAMBERT_WHAT_A_PRICK} |
@@ -391,9 +391,97 @@ con.close()
 exit()
 ```
 
-**Note:** After the competition ended I realized that I forgot to write down the flag anywhere, and have no way to find it without the server being online. Thus the flag here isn't the correct one, but rather it is a permutation of the correct one - this is as close as I can provide at this point.
+**Output:**
+```
+Number of flags = 3628800
 
-**Flag:** ```ping{F28ied9a4n}```
+--> Running Exploit Script for pingCTF Challenge "Guess What"...
+
+Finding the 3-byte secret value 'rest'...
+
+--> Sending: f01636
+
+ :)
+I will give you some sTrInGs, and you will have to tell me, which one is missing, seems easy, right? :D
+Let's try it out!
+Iteration 2:
+--> Sending: AA
+
+Iteration 3:
+--> Sending: BBA
+
+Iteration 4:
+--> Sending: ABAA
+
+Iteration 5:
+--> Sending: ABABB
+
+Iteration 6:
+--> Sending: BBBABB
+
+Iteration 7:
+--> Sending: AAAABAA
+
+Iteration 8:
+--> Sending: AAAABBAA
+
+Iteration 9:
+--> Sending: BAABABAAA
+
+Iteration 10:
+--> Sending: ABAABBBBAB
+
+Iteration 11:
+--> Sending: BAABBBBBAAA
+
+Iteration 12:
+--> Sending: ABAABAAABAAB
+
+Iteration 13:
+--> Sending: ABBAAABBBABAA
+
+Iteration 14:
+--> Sending: ABAAAAAABBAAAA
+
+Iteration 15:
+--> Sending: ABABBBBBBBAAAAB
+
+Iteration 16:
+--> Sending: AAABBBBBABBBBABB
+
+Iteration 17:
+--> Sending: ABAAABBABBAAABAAB
+
+> ABAAABBABBAAABAAB
+Correct!
+You are doing great! Now, let's try something harder!
+I will give you AGAIN some StRiNgS, and you will have to tell me, which one is missing, seems still doable, right? :D
+But I need you to hurry this time, so you will have to guess the missing string in 5 seconds.
+Let's try it out!
+
+Iteration 2:
+--> Sending: BDBACA
+
+Iteration 3:
+--> Sending: DDADCC
+
+Iteration 4:
+--> Sending: CCBCBA
+
+Iteration 5:
+--> Sending: BCCBBA
+
+Line 1: > BCCBBA
+Line 2: Correct!
+Line 3: Ok. This is kinda spooky. This time I will show you that I know everything, and you will have to prove me wrong in order to get the flag.
+Now finding flag (this may take a bit)...
+--> Finished with the processing!
+--> Final flags list size: 3628800
+--> Final flags2 list size: 3628800
+--> Sending: ping{4nF8ai2e9d}
+```
+
+**Flag:** ```ping{4nF8ai2e9d}```
 
 ## 6) secret formula
 In this challenge, we are given a cryptic series of instructions from a mysterious figure named "Heisenberg" that seem to relate to chemistry and mixing together various elements. Breaking Bad vibes, anyone? :)
