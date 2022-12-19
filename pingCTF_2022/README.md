@@ -40,7 +40,7 @@ __int64 __fastcall checkflag(_BYTE *a1)
 }
   ```
 
-where ```a1``` is the user input into the program, i.e., the flag which function ```checkflag``` is actually checking.
+The input to this function is ```a1```, the user input into the program. This is the flag which the function ```checkflag``` is actually checking.
 ```checkflag``` takes the contents of the input string within ping{...} and checks whether each char satisfies the following equation:
 
 ```if ( 4 * (v5[j % 31] ^ KEYS[j % 14]) + 2 * j != FLAG[j] )```
