@@ -517,7 +517,7 @@ public void OnTriggerEnter(Collider collider)
 	}
 }
 ```
-Essentially, ```OnCollisionEnter()``` says that if the ball hits the racket, that collision counts as a hit and increases our score. Conversely, ```OnTriggerEnter()``` says that if the ball hits the barrier, that collision counts as a miss and decreases our score. *However*, we can change ```OnTriggerEnter()``` so that any collision the ball makes with the barrier will count as a hit, rather than a miss! This also has the benefit of being more subtle to bypass the anti-cheat engine, because we still need the same amount of balls and time to reach a score of 2022 as the original, authentic version of the game. The improved code is shown below:
+Essentially, ```OnCollisionEnter()``` says that if the ball hits the racket, that collision counts as a hit and increases our score. Conversely, ```OnTriggerEnter()``` says that if the ball hits the barrier, that collision counts as a miss and decreases our score. *However*, we can change ```OnTriggerEnter()``` so that any collision the ball makes with the barrier will count as a hit, rather than a miss! This also has the benefit of being more subtle to bypass the anti-cheat engine, because we still need the same amount of balls and time to reach a score of 2022 as the original, authentic version of the game. The improved code is shown below. Notice that until 2022 balls have collided with the barrier, barrier collisions count as successful ball hits. After 2022 balls have been thrown, we know our score is high enough and we can end the game, *subtly*, by reverting barrier collisions back to counting as ball misses.
 ```C#
 public void OnTriggerEnter(Collider collider)
 {
@@ -559,4 +559,24 @@ https://user-images.githubusercontent.com/120992983/208371117-0ca4c3f0-7d4c-4914
 
 **Flag:** ```ping{sdgh4wmh_gg_wp_2022}```
 
-# 8) 
+# 8) toss a coin to your witcher
+We are given the following conversation between Geralt and Jaskier (characters from the popular game 'The Witcher'):
+```
+Jaskier: 
+- Hey Geralt remember that time...***speaks Elvish***
+LSWFWGXYPAELNTWNVPCFJRXMAYMBNPKMFWLYEPRVQLYELSXFVGHERQNICRAHGXRCVAUZCIZDMGEALSMIBRJNOZWZXEJFWUMXNGVKGSGEPGEIAEZDTSWNWQNDUNKITMOUEPMNJCHPTCUFRKLQYRHUCUMFKYCANTRGEVNLDXJXCDNHQEMEHJJOGNTTBKYYTAPYETBMEVTTUMZZCEETMFGHLDLOCGWUCPSEJSEGADSFIAZVIPCIQOHJTJKHXRPEWVRPRXFEWLDLDHEHEWPOWOHFL
+ZZDFEMSCLONYGEIJPCNLIOKEPJJGZFREVMKFWUSHNBLAKMLLSFRVKWSPHICKMFSESGSTIBOLIGFDIUGNXRMEZRGYLDWODLBYOTGTBXVOAYYMIAVLQXJEPFJVKZVNHAIKMPDTOZTYJIAJTXDDYLKPQIOVPKYKUDAIHJIAYWDYFIKVKSDYICUKQWPWTPQKAAZIKPPISUKVENSIUPKUDXRBRBVOCNAXGRGAZTTTTVAVOPMMTW
+LKAMAMRDLAGNLMBFVWHNTEWOCVFKCEEZDIRLZPSVOJIAGSDPXFEJNNLFKITELNILTYBVIBWNEULTJAKXRODJRTKAHSBNVZURBPSEJSEBJAEKEHKMFOIPDFWJBKUHXMNRBTODPQDXZGRPTXDGVYWODTOIEIFAKMXWPIZCXETAFBGXYANHPGVBVILSPPXYHQNHLOVVVKEDARSEZWYVULICXQTVHHQOSWRAZNNGEFWTNCAINMJMWREMOIRTNIZFUOGYBAMLRJJJBKMPVUTMKHNOIFECKMTOOFASGFGPPNNESVTKMLTQBWLGHVCDESVVVSCEXZQIKASAMIDELKFPRFFHZGGUOPNCFBGXOFGMPPUAPNZSIPTGRZUEFEEPDVMWOLESGZELMJRETILS
+HAIVIUIMETJRULKVNXRSZVKXRSAXMEWKDEQCJJMJODUYNIIUNLADFPJBOOECQSXRBJAYTNSWCNPTLXFHGKKWRBEIPTGNHAUUIUZAAEBTWVZCBPWAPHVWHPTMLTYMTMZNFSEJMAKUGRTJMTFPDMTQIIWYTBCJCITMZLXFGKBJNIMEKVZADSIZHEJBJKUEGTEKGCPEYTEJDILAGTBVZTINOGMHGNPHGXOAUJGQTNTBHSHUUOBSNKIDVPFDPRKPDVLXGXMMPLCIZHMEZOVSHCXRJ
+NOQEXJGZMUZUIPAZMFWCSQQXVFXLRLUHGQESZNRBVYBIAWHARLBGXPSEQIIYAJTEYRFDGBPDMTEEXTHMBNTJWTORUXBVFYULALTDEQURPDRSMVGZZHBPGVUCBVANMCEHSPNWOLRLOSCEYBXKXNWRTIHVGQEMEPXLVGYLDXLXMMTOOYQTTFKPZMXNOVINYFSXZEIKWUGBNVWZCXVNQTWVLPPMTBAVIUXLYMOCRKPPCEETEIDVPDYVWZVWSSAYCVAUIPTEJBKXAUYXTQCCURPSQOXZKAPTLTWVLKNQISVVVPKUDXRDWN
+
+Geralt: 😳😳😳
+- How the hell can you speak Elivsh?!
+
+Jaskier: 😨
+- Don't know. That was a crazy **COINCIEDENCE**! I will write a ballade about it!
+
+Geralt: 😕
+- Hmmmmm....if only I could remember the key....
+```
+It's rather clear that this is a cipher of some sort, and after plugging this into [Dcode's cipher identifier](https://www.dcode.fr/cipher-identifier) it seems likely that it is a Vigenere Cipher:
