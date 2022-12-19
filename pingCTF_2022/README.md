@@ -10,6 +10,7 @@ Competition URL: https://ctf.knping.pl/
 | welcome | Misc | ping{W3lc0m3_t0_p1ngCTF_2022!_3c08b6c9a06c7db} |
 | guess what | Misc | ping{F28ied9a4n} |
 | secret formula | Misc | ping{FINdgUSTaVOFrIng} |
+| ping game | Misc | ping{sdgh4wmh_gg_wp_2022} |
 
 ## 1) Baby Rev
 In this simple reverse engineering challenge, we are given an ELF64 executable named ```babyrev``` to analyze. Opening it up in Ghidra or IDA, we can easily find a red herring function named ```checkflag``` and decompile it:
@@ -390,7 +391,7 @@ exit()
 
 **Flag:** ```ping{F28ied9a4n}```
 
-## 5) secret formula
+## 6) secret formula
 In this challenge, we are given a cryptic series of instructions from a mysterious figure named "Heisenberg" that seem to relate to chemistry and mixing together various elements. Breaking Bad vibes, anyone? :)
 
 **Secret Formula Instructions:**
@@ -446,4 +447,11 @@ Eureka! This clue is telling us to take the characters we found from the instruc
 
 **Flag:** ```ping{FINdgUSTaVOFrIng}```
 
-## 6)
+## 7) ping game
+In this challenge, we are given a Unity Ping Pong application with the flag hidden within the game. The one piece of information we are given is that beating the game master's high school (2022) will yield a special reward, which we can assume to be the flag.
+
+After downloading and running the game, it is a good idea to simply try out the game and see what it is like. Opening the game shows a character customization menu and a normal main menu page with several interactive pages:
+
+
+
+Settings, Rankings, etc. pages as well as the Play button. Clicking ```Play``` brings up a screen where several balls are thrown toward you
