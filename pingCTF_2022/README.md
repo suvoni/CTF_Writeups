@@ -848,3 +848,6 @@ This is my first top-3 finish in a CTF and I hope to keep improving my skills.
 
 ![ctf_scoreboard](./images/ping_ctf_scoreboard.PNG)
 
+If you have any questions or want to team up in the future, my contact is suvoni.ctf@gmail.com
+
+Until next time...
