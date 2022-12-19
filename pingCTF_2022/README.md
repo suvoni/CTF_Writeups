@@ -1,5 +1,12 @@
 # pingCTF 2022 Writeup (3rd Place)
 Competition URL: https://ctf.knping.pl/
+## Overview
+
+| Challenge | Category | Flag |
+| --------- | -------- | ---- |
+| baby rev  | Rev      | ping{r3v3rs1ng_c4n_b3_S0_muCH_FUN!!!} |
+| crypto    | Rev      | ping{3n1gm4_fl4sh_b4ck5_d0_y0u_r3c4ll?} |
+
 ## 1) Baby Rev
 In this simple reverse engineering challenge, we are given an ELF64 executable named ```babyrev``` to analyze. Opening it up in Ghidra or IDA, we can easily find a red herring function named ```checkflag``` and decompile it:
 ```C
