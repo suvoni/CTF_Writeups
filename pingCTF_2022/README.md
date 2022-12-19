@@ -493,9 +493,8 @@ public void OnCollisionEnter(Collision collision)
 		UnityEngine.Object.FindObjectOfType<GameManager>().ballsHit.Add(this.ballId);
 		base.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
 
-      		//Some other stuff...
+      		//Some stuff I removed for brevity...
 
-		num += list[this.ballId - 1];
 		GameObject.FindGameObjectWithTag("Verifier").transform.Translate(0f, (float)num, 0f);
 		this.isActive = false;
 		if (UnityEngine.Object.FindObjectOfType<GameManager>().UseCameraShake)
@@ -510,13 +509,47 @@ public void OnTriggerEnter(Collider collider)
 {
 	if (collider.gameObject.tag == "Barrier" && UnityEngine.Object.FindObjectOfType<GameManager>().IsGameOn)
 	{
-		//Some other stuff...
+		//Some stuff I removed for brevity...
 		
-		num += list[this.ballId - 1];
 		GameObject.FindGameObjectWithTag("Verifier").transform.Translate((float)num, 0f, 19f);
 		UnityEngine.Object.FindObjectOfType<GameManager>().ballsMissed.Add(this.ballId);
 		UnityEngine.Object.FindObjectOfType<GameManager>().LifeIndicatorsManager.SetOffRandomIndicator();
 		UnityEngine.Object.FindObjectOfType<GameManager>().OnBallMissed();
+	}
+}
+```
+Essentially, ```OnCollisionEnter()``` says that if the ball hits the racket, that collision counts as a hit and increases our score. Conversely, ```OnTriggerEnter()``` says that if the ball hits the barrier, that collision counts as a miss and decreases our score. *However*, we can change ```OnTriggerEnter()``` so that any collision the ball makes with the barrier will count as a hit, rather than a miss! This also has the benefit of being more subtle to bypass the anti-cheat engine, because we still need the same amount of balls and time to reach a score of 2022 as the original, authentic version of the game. The improved code is shown below:
+```C#
+public void OnTriggerEnter(Collider collider)
+{
+	if (collider.gameObject.tag == "Barrier" && UnityEngine.Object.FindObjectOfType<GameManager>().IsGameOn)
+	{
+		if (UnityEngine.Object.FindObjectOfType<GameManager>().ballsHit.Count < 2022)
+		{
+			UnityEngine.Object.FindObjectOfType<GameManager>().points += this.ballId;
+			UnityEngine.Object.FindObjectOfType<GameManager>().SoundsManager.PlaySound();
+			UnityEngine.Object.FindObjectOfType<GameManager>().ballsHit.Add(this.ballId);
+			base.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+
+			//Some stuff I removed for brevity...
+
+			GameObject.FindGameObjectWithTag("Verifier").transform.Translate(0f, (float)num, 0f);
+			this.isActive = false;
+			if (UnityEngine.Object.FindObjectOfType<GameManager>().UseCameraShake)
+			{
+				CameraShake.Shake(0.2f, 0.1f);
+				return;
+			}
+		}
+		else
+		{
+			//Some stuff I removed for brevity...
+			
+			GameObject.FindGameObjectWithTag("Verifier").transform.Translate((float)num2, 0f, 19f);
+			UnityEngine.Object.FindObjectOfType<GameManager>().ballsMissed.Add(this.ballId);
+			UnityEngine.Object.FindObjectOfType<GameManager>().LifeIndicatorsManager.SetOffRandomIndicator();
+			UnityEngine.Object.FindObjectOfType<GameManager>().OnBallMissed();
+		}
 	}
 }
 ```
