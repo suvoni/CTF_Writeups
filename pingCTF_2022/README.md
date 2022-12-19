@@ -164,6 +164,8 @@ We are given a password-protected Excel spreadsheet with students' grades on it.
 
 ```/usr/share/john/office2john.py HS_Grades_December_2022.xlsx > hash.txt```
 
-Then, to crack the password with John, a wordlist is needed for brute force password generation. I used the classic ```rockyou.txt``` which can be found easily on the internet. Once that was downloaded, cracking the password was as easy as running a simple command:
+Then, to crack the password with John, a wordlist is needed for brute force password generation. I used the classic ```rockyou.txt``` wordlist which can be found easily on the internet. Once that was downloaded, cracking the password was as easy as running a simple command:
 
-![ww](./highschoolgrades/john_excel.PNG)
+![john1](./highschoolgrades/john_excel.PNG)
+
+Bingo! The password is thus ```1234567```. Unlocking the Excel file, we see the following data:
