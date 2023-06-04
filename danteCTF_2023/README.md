@@ -31,3 +31,4 @@ def encrypt_image(image, key):
 
     return b64encode(bs.getvalue())
 ```
+A close inspection will reveal that each RGB pixel in the image is transformed using a permutation-substitution step into an encrypted form, according to the bits of the key. First, the R/G/B values are negated if the 1st/2nd/3rd least significant bits in the key are set (1) - this is the substitution step. Next, the RGB values are swapped around according to positions specified in the ```perm_table``` - this is the permutation step.
