@@ -273,6 +273,6 @@ Is the flag encoded in these coordinates somehow? Plotting these coordinates on 
 
 It's not pretty, but zooming in around small groups of characters can help us read the flag characters:
 
-![flag_coords2](./images/flag_coords2.PNG)
+![flag_coords2](./images/flag_coord2.PNG)
 
 **Flag:** ```DANTE{FLAG_REPORTING_SYSTEM}```
