@@ -311,4 +311,16 @@ plt.show()
 ```
 
 ## 3) StrangeBytes
-In this challenge, we are given 250 binary files with 
+In this challenge, we are given 250 binary files with what appears to be random, meaningless data in them. We are told from the challenge description that they were encrypted using AES CBC, and that there may be something _strange_ in them which can be exploited.
+
+The [definition of "strange"](https://www.merriam-webster.com/dictionary/strange) is something that is "different from what is usual, ordinary, or expected". So, we know that there is _something_ strange about bytes in these files, but beyond that we don't have much information. Identifying what exactly the _strange_ bytes are is probably the first significant hurdle in solving this challenge.
+
+After a long time examining the files for any strange bytes, one of our teammates noticed that each file shares a common contiguous subsequence of bytes:
+
+![sus_bytes](sus_bytes.png)
+
+To be exact, there is a sequence of 53 contiguous bytes present in each of the 250 binary files:
+
+```5cf3c0f06ffb02fea39b6dabde2867209e96863463a4b78b55aa4d88b033811e3aba1b257944afdf4f620b0fe47ba1b85c3a434243```
+
+This is interesting...but now what? Knowing that these files were encrypted with AES CBC, is it possible that the IV and plaintext are in these bytes
