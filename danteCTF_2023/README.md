@@ -1,4 +1,4 @@
-# danteCTF 2023 Writeup (Team: L3ak)
+# danteCTF 2023 Writeup (Team: L3ak, 4th Place)
 Competition URL: https://dantectf.it/
 ## Overview
 
@@ -9,4 +9,4 @@ Competition URL: https://dantectf.it/
 | StrangeBytes | Misc | DANTE{AHh9HhH0hH_ThAat_RAnsomware_maDe_m3_SaD_FFFFAAABBBBDDDD67} |
 
 ## 1) PiedPic
-In this challenge,
+In this crypto challenge, we are given 
