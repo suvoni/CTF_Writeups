@@ -1,4 +1,4 @@
-# danteCTF 2023 Writeup (Team: L3ak, 4th Place)
+# DanteCTF 2023 Writeup (Team: L3ak, 4th Place)
 Competition URL: https://dantectf.it/
 ## Overview
 
