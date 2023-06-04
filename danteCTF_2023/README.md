@@ -9,7 +9,7 @@ Competition URL: https://dantectf.it/
 | StrangeBytes | Misc | DANTE{AHh9HhH0hH_ThAat_RAnsomware_maDe_m3_SaD_FFFFAAABBBBDDDD67} |
 
 ## 1) PiedPic
-In this crypto challenge, we are given a Python file named ```PiedPic.py``` which takes an image as input and returns an encrypted form of it. It also provides the encrypted form of a "flag file" that we presumably must decrypt. The ```encrypt_image``` function is shown below.
+In this crypto challenge, we are given a Python file named ```PiedPic.py``` which takes an image as input and encrypts it. It also encrypts a "flag file" that we presumably must decrypt. The ```encrypt_image``` function is shown below.
 ```Python
 def encrypt_image(image, key):
     perm_table = {0: (0, 1, 2), 1: (0, 2, 1), 2: (1, 0, 2), 3: (1, 2, 0), 4: (2, 0, 1), 5: (2, 1, 0)}
