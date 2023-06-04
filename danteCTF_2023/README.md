@@ -252,7 +252,20 @@ There is a faint binary signal present in the spectrogram! This discovery led me
 
 and I ended up choosing AFSK1200 to start with (which turned out to be the right choice!).
 This tool requires the ```.wav``` file to be in ```.raw``` format, which can be achieved using sox:
+
 ```sox -t wav aprs_out.wav -esigned-integer -b16 -r 22050 -t raw aprs_out.raw```
+
 This command essentially takes the wave file and converts it to ```.raw``` format. Notice the sampling rate of 22050Hz being used here, which is the standard for these types of radio transmissions. Once this is done, we can use **multimon-ng** to decode the signal:
+
 ```multimon-ng -t raw -a AFSK1200 aprs_out.raw > flag```
+
 The decoded data in ```flag``` looks like:
+
+![demod_flag](./images/demod_flag.PNG)
+
+We are definitely on the right track - we can see "Hello flag!" in every packet. If we scrutinize the data closely, we can see that there are slightly different coordinates used in each packet transmission:
+
+![demod_flag2](./images/demod_flag2.PNG)
+
+Is the flag encoded in these coordinates somehow? Plotting these coordinates on a Cartesian coordinate system yields:
+
