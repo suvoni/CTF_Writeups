@@ -317,7 +317,7 @@ The [definition of "strange"](https://www.merriam-webster.com/dictionary/strange
 
 After a long time examining the files for any strange bytes, one of our teammates noticed that each file shares a common contiguous subsequence of bytes:
 
-![sus_bytes](sus_bytes.png)
+![sus_bytes](images/sus_bytes.png)
 
 To be exact, there is a sequence of 53 contiguous bytes present in each of the 250 binary files:
 
