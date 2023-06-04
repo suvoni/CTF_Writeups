@@ -236,6 +236,7 @@ p.close()
 ```
 
 **Flag Image:**
+
 ![piedpic](./PiedPic/flag.png)
 
 **Flag:** ```DANTE{Att4cks_t0_p1x3L_Encrypt3d_piCtUrES_511f0c49f8be}```
