@@ -327,5 +327,156 @@ This is interesting...but now what? Knowing that these files were encrypted with
 
 Well, if we try taking out these strange bytes from every file, the length of each file becomes an integer multiple of 16: the AES block size! This finding supports our hypothesis, as this is unlikely to be a coincidence. Now the question becomes, which bytes are the IV and which are the key, and how do we know which AES variant (128, 192, 256) was used? If you look closely at the strange bytes and at the image above, you may notice that the last 5 bytes are ```\:CBC```, which seems to act as some sort of delimiter or marker for the strange bytes. If we remove these 5 bytes we are left with 48 bytes for our key + IV. Logically, if the AES blocksize (and therefore IV) is always 16 bytes long, then the other 32 must be the key size, indicating that AES-256 was used. Knowing the type of AES used, its simply a matter of guessing whether the 48 stranges bytes are (key,IV) or (IV,key). Using first option to decrypt the files yields the true plaintexts:
 
+![dec_file](images/dec_file.PNG)
+
+The contents of most of the files don't make sense, but the fact that they only contain uppercase/lowercase english letters indicates we did the decryption properly. Doing a simple ```grep -rF --text "DANTE" .``` will reveal which file contains the flag:
+
+![grep](images/grep.PNG)
+
+**Flag:** ```DANTE{AHh9HhH0hH_ThAat_RAnsomware_maDe_m3_SaD_FFFFAAABBBBDDDD67}```
+
+**Solution Code:**
+```Python
+import os
+import binascii as b
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad
+from Crypto.Random import get_random_bytes
+
+# Make sure these directories exist in the same directory as this program before running
+dir_enc = './encrypted_files/'
+dir_dec = './decrypted_files/'
+
+# These bytes are the "strange bytes" referenced in the challenge description
+# They are present in every encrypted file, and taking them out yields the true ciphertext
+lcs = '5cf3c0f06ffb02fea39b6dabde2867209e96863463a4b78b55aa4d88b033811e3aba1b257944afdf4f620b0fe47ba1b85c3a434243'
+
+# Finds longest common subsequence of bytes between all the files in the ./generated directory
+def find_lcs(s1, s2):
+    matrix = [["" for x in range(len(s2))] for x in range(len(s1))]
+    for i in range(len(s1)):
+        for j in range(len(s2)):
+            if s1[i] == s2[j]:
+                if i == 0 or j == 0:
+                    matrix[i][j] = s1[i]
+                else:
+                    matrix[i][j] = matrix[i-1][j-1] + s1[i]
+            else:
+                matrix[i][j] = max(matrix[i-1][j], matrix[i][j-1], key=len)
+    cs = matrix[-1][-1]
+    return len(cs), cs
+
+# Decrypt file using AES-256 CBC
+def decrypt_file_AES_256_CBC(filename, key, iv):
+
+    # Open the encrypted file and read the ciphertext from it
+    with open(dir_enc + filename, 'rb') as file:
+        ciphertext = file.read()
+
+    # Create the AES-256 CBC cipher
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+
+    # Decrypt the ciphertext
+    decrypted_data = cipher.decrypt(ciphertext)
+
+    # Write the decrypted data to a new file in the ./decrypted_files directory
+    decrypted_file_path = dir_dec + filename + '.dec'
+    with open(decrypted_file_path, 'wb') as file:
+        file.write(decrypted_data)
 
 
+
+# Start of program
+print('Reading in files...')
+
+# Found this after running the program
+lcs = '5cf3c0f06ffb02fea39b6dabde2867209e96863463a4b78b55aa4d88b033811e3aba1b257944afdf4f620b0fe47ba1b85c3a434243'
+
+# Specify the path to the subdirectory
+directory = './generated/'
+
+# Get the list of file paths in the directory
+file_paths = [os.path.join(directory, file) for file in os.listdir(directory)]
+
+# Convert the contents of each binary file to hex strings
+hex_strings = []
+for file_path in file_paths:
+    with open(file_path, 'rb') as file:
+        byte_str = file.read()
+        hex_str = b.hexlify(byte_str).decode().zfill(len(byte_str) * 2)
+        if lcs not in hex_str:
+            print(file_path)
+        hex_strings.append(hex_str)
+        index = hex_str.find(lcs, 0)
+
+print('--> Done\n')
+print('Finding the strange bytes present in each file...')
+
+# Find the longest common subsequence SHARED BETWEEN ALL FILES --> these are the "strange bytes"
+lcs = hex_strings[0]
+for i in range(1, len(hex_strings)):
+    curr_file = hex_strings[i]
+    len_lcs, lcs = find_lcs(lcs, curr_file)
+strange_bytes = bytes.fromhex(lcs)
+
+print('--> Done\n')
+print('Strange bytes (hex): ' + lcs)
+print('Strange bytes (bin): ' + str(strange_bytes)) 
+print('Length of byte sequence: ' + str(len(lcs)/2) + '\n')
+print('Removing strange bytes from each binary file...')
+
+# lcs = '5cf3c0f06ffb02fea39b6dabde2867209e96863463a4b78b55aa4d88b033811e3aba1b257944afdf4f620b0fe47ba1b85c3a434243'
+# length = 53 bytes
+
+
+# Remove the strange bytes (lcs) from every file in ./generated and place the file in ./encrypted_files
+for filename in os.listdir(directory):
+
+    file_path = os.path.join(directory, filename) 
+
+    # Open the original file with the strange bytes in it
+    f = open(file_path, 'rb')
+    f_data = f.read()
+    f.close()
+
+    # Remove the strange bytes from the file data
+    modified_data = f_data.replace(strange_bytes, b'')
+
+    # Open the new file and write the modified bytes to it
+    f = open(dir_enc + filename, 'wb')
+    f.write(modified_data)
+    f.close()
+
+# Verify that the strange bytes are no longer in the encrypted files and that
+# the length of the files is a multiple of 16 for AES CBC decryption
+for filename in os.listdir(dir_enc):
+    file_path = os.path.join(dir_enc, filename)
+    f = open(file_path, 'rb')
+    f_data = f.read()
+    f.close()
+    assert(int(len(f_data)) % 16 == 0)
+    assert(lcs not in b.hexlify(f_data).decode().zfill(len(f_data) * 2))
+
+print('--> Done\n')
+print('Decrypting files...')
+
+# Extract the IV and key from the strange bytes
+key = bytes.fromhex(lcs[0:64])
+iv = bytes.fromhex(lcs[64:96])
+
+assert(len(iv) == 16)
+assert(len(key) == 32)
+
+# Decrypt every file in the directory using the key and IV from the strange bytes
+for filename in os.listdir(dir_enc):
+
+    # Decrypt the file using AES-256 CBC
+    decrypt_file_AES_256_CBC(filename, key, iv)
+
+print('--> Done\n')
+
+# If you grep for 'DANTE' in the ./decrypted_files directory, you'll see the flag
+# is in decrypted_files/veUIZbPBWvSDVcdL.dec
+
+# Flag: DANTE{AHh9HhH0hH_ThAat_RAnsomware_maDe_m3_SaD_FFFFAAABBBBDDDD67}
+```
