@@ -265,7 +265,14 @@ The decoded data in ```flag``` looks like:
 
 We are definitely on the right track - we can see "Hello flag!" in every packet. If we scrutinize the data closely, we can see that there are slightly different coordinates used in each packet transmission:
 
-![demod_flag2](./images/demod_flag2.PNG)
+![demod_flag2](./images/demod_flag2.png)
 
 Is the flag encoded in these coordinates somehow? Plotting these coordinates on a Cartesian coordinate system yields:
 
+![flag_coords](./images/flag_coords.PNG)
+
+It's not pretty, but zooming in around small groups of characters can help us read the flag characters:
+
+![flag_coords2](./images/flag_coords2.PNG)
+
+**Flag:** ```DANTE{FLAG_REPORTING_SYSTEM}```
