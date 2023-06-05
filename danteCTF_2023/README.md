@@ -323,7 +323,7 @@ To be exact, there is a sequence of 53 contiguous bytes present in each of the 2
 
 ```5cf3c0f06ffb02fea39b6dabde2867209e96863463a4b78b55aa4d88b033811e3aba1b257944afdf4f620b0fe47ba1b85c3a434243```
 
-This is interesting...but now what? Knowing that these files were encrypted with AES CBC, is it possible that these bytes contain the IV and encryption key?
+This is interesting...but now what? Knowing what to do next with these bytes is probably the second hurdle in this challenge. Thinking back to the challenge description, we know that the files were encrypted with AES CBC, so is it possible that these bytes contain the IV and encryption key?
 
 Well, if we try taking out these strange bytes from every file, the length of each file becomes an integer multiple of 16: the AES block size! This finding supports our hypothesis, as this is unlikely to be a coincidence. Now the question becomes, which bytes are the IV and which are the key, and how do we know which AES variant (128, 192, 256) was used? If you look closely at the strange bytes and at the image above, you may notice that the last 5 bytes are ```\:CBC```, which seems to act as some sort of delimiter or marker for the strange bytes. If we remove these 5 bytes we are left with 48 bytes for our key + IV. Logically, if the AES blocksize (and therefore IV) is always 16 bytes long, then the other 32 must be the key size, indicating that AES-256 was used. Knowing the variant of AES used for encryption, it's simply a matter of guessing whether the 48 stranges bytes are ```key+IV``` or ```(IV+key)```. Using first option to decrypt the files yields the true plaintexts:
 
