@@ -2,11 +2,11 @@
 Competition URL: https://dantectf.it/
 ## Overview
 
-| Challenge | Category | Flag |
-| --------- | -------- | ---- |
-| PiedPic | Crypto | DANTE{Att4cks_t0_p1x3L_Encrypt3d_piCtUrES_511f0c49f8be} |
-| Almost Perfect Remote Signing | Forensics | DANTE{FLAG_REPORTING_SYSTEM} |
-| StrangeBytes | Misc | DANTE{AHh9HhH0hH_ThAat_RAnsomware_maDe_m3_SaD_FFFFAAABBBBDDDD67} |
+| Challenge | Category | Points | Flag |
+| --------- | -------- | ------ | ---- |
+| PiedPic | Crypto | 435 | DANTE{Att4cks_t0_p1x3L_Encrypt3d_piCtUrES_511f0c49f8be} |
+| Almost Perfect Remote Signing | Forensics | 463 | DANTE{FLAG_REPORTING_SYSTEM} |
+| StrangeBytes | Misc | 490 | DANTE{AHh9HhH0hH_ThAat_RAnsomware_maDe_m3_SaD_FFFFAAABBBBDDDD67} |
 
 ## 1) PiedPic
 In this crypto challenge, we are given a Python file named ```PiedPic.py``` which takes an image as input and encrypts it. It also encrypts a "flag file" that we presumably must decrypt. The ```encrypt_image``` function is shown below.
