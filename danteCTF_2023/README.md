@@ -37,7 +37,7 @@ To decrypt the image, we need to reverse the above process, and we also need to 
 
 The method I devised to accomplish this task is to use (1,2,4) for the (R,G,B) values in every image pixel. Why use these numbers? Well, the binary equivalent of (1,2,4) is (001, 010, 100), and the negated version of this is (110, 101, 011). Thus, for any combination of substitutions and permutations, we can find the permutation and substitution by the mapping between the original and encrypted forms.
 
-For example, if the first byte (the "R" in RGB) is negated in the substitution step, then (1,2,4) becomes (254,2,4). Then, if the permutation chosen by the key is (0,2,1) then (254,2,4) becomes (254,4,2) (i.e., the 2nd and 3rd values are swapped). Looking at the encrypted version, we know that 254 has to correspond to 1 (reversing the substitution step) and that the 2nd and 3rd values are swapped (since we know the original order). Thus we can also reverse the permutation. Once that is done, we can reverse engineer the key and use it to decrypt the flag.
+For example, if the first byte (the "R" in RGB) is negated in the substitution step, then (1,2,4) becomes (254,2,4). Then, if the permutation chosen by the key is (0,2,1) then (254,2,4) becomes (254,4,2) (i.e., the 2nd and 3rd values are swapped). Looking at the encrypted version, we know that 254 has to correspond to 1 (reversing the substitution step) and that the 2nd and 3rd values are swapped (since we know the original order). Thus we can also reverse the permutation. Once that is done, we can reverse engineer the key byte used for the current pixel. Repeating this process for all pixels will uncover the entire keystream which we can use to decrypt the flag.
 
 **Python Solution:**
 ```Python
