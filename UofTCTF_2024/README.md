@@ -40,7 +40,15 @@ Our ultimate goal is to read the ``flag`` file whose name/path is visible in the
 ```Python
 print(open('flag').read()) # (1)
 ```
-However, here we have several restrictions which prevent this simple code injection. The first one we need to bypass is the removal of builtins, which are native Python functions (such as ``print()``) that are always available without the need to import any modules. To recover these, we can exploit [the dunder method hierarchy](https://www.tutorialsteacher.com/python/magic-methods-in-python) on Python objects like lists ``[]``, tuples ``()``, etc. In essence, we can traverse "up" and "down" the dunder method hierarchy to access all builtin methods which were removed in the sanitization. The following will 
+However, here we have several restrictions which prevent this simple code injection. The first one we need to bypass is the removal of builtins, which are native Python functions (such as ``print()``) that are always available without the need to import any modules. To recover these, we can exploit [the dunder method hierarchy](https://www.tutorialsteacher.com/python/magic-methods-in-python) on Python objects like lists ``[]``, tuples ``()``, etc. In essence, we can traverse "up" and "down" the dunder method hierarchy to access all builtin methods which were removed in the sanitization. The following will do the same as (1) above, bypassing the builtins removal:
+```Python
+().__class__.__bases__[0].__subclasses__()[121].get_data('.','flag') # (2)
+```
+(For more information on how this works, see [here](https://book.hacktricks.xyz/generic-methodologies-and-resources/python/bypass-python-sandboxes#no-builtins).
+We can improve on (2) above to bypass the **__** blacklist by using Unicode character U+FF3F (`＿`) ([found here](https://www.compart.com/en/unicode/U+FF3F)). Amazingly, Python interprets this character as an underscore in code execution, yet it passes the blacklist check!
+```Python
+()._＿class_＿._＿bases_＿[0]._＿subclasses_＿()[121].get_data('.','flag') # (3)
+```
 
 **Python Solution:**
 ```Python
