@@ -54,7 +54,7 @@ Now we need to bypass the alphanumeric character restriction, and this is where 
 
 ![gif2](./images/the_office.gif)
 
-Just like with the underscores, we can utilize Unicode alphabet characters for parts of our exploit. The Python interpreter will perceive these as normal alphabet chars, but since they are not standard ASCII, they will bypass the blacklist check. I used some Unicode gothic alphabet characters (found [here](https://en.wikipedia.org/wiki/Mathematical_Alphanumeric_Symbols)) as suitable substitutes for most of the exploit above:
+First let us start with replacing all alphabet characters ``abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ``. Just like with the underscores, we can utilize Unicode alphabet characters for parts of our exploit. The Python interpreter will perceive these as normal alphabet chars, but since they are not standard ASCII, they will bypass the blacklist check. I used some Unicode gothic alphabet characters (found [here](https://en.wikipedia.org/wiki/Mathematical_Alphanumeric_Symbols)) as suitable substitutes for most of the exploit above:
 ```Python
 ()._＿𝖈𝖑𝖆𝖘𝖘_＿._＿𝖇𝖆𝖘𝖊𝖘_＿[0]._＿𝖘𝖚𝖇𝖈𝖑𝖆𝖘𝖘𝖊𝖘_＿()[121].𝖌𝖊𝖙_𝖉𝖆𝖙𝖆('.','flag') # (4)
 ```
@@ -66,6 +66,11 @@ This will access the tuple documentation and get the 38th character (g):
 ```
 Built-in immutable sequence.\n\nIf no ar(g)ument is given, the constructor returns an empty tuple.\nIf iterable is specified the tuple is initialized from iterable's items.\n\nIf the argument is a tuple, the return value is the same object.
 ```
+We can update (4) above using this method to get:
+```Python
+
+```
+
 **Python Solution:**
 ```Python
 from pwn import *
