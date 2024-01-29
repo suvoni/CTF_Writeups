@@ -74,7 +74,7 @@ This will read the ``flag`` file, while bypassing all alphabet, double underscor
 
 ![img1](./images/sanity.png)
 
-The last restriction we need to bypass is the one on digits ``0123456789``. This is where my payload becomes monstrously long, and I apologize in advance for any mental anguish or distress I cause readers of this writeup. Turn back now if you have a serious heart condition or experience nauseua when subjected to unapologetically obnoxious code one-liners.
+The last restriction we need to bypass is the one on digits ``0123456789``. This is where my payload becomes monstrously long, and I apologize in advance for any mental anguish or distress I cause readers of this writeup. Turn back now if you have a serious heart condition or experience nauseua when subjected to unapologetically obnoxious one-liners of code.
 
 The basic idea to replace digits (which two of my teammates, ahh and Matthias, helped me realize) is that in Python, ``True``/``False`` are interpreted as ``1``/``0`` when used in mathematical expressions. Thus, we can replace all numeric values in (5) with ``True+True+True+...`` for all integers > 0 and ``False`` in the case of 0. To avoid using the strings ``True`` and ``False`` *directly*, we can substitute expressions which *evaluate* to ``True``/``False``, such as ``(''=='')`` (True) and ``(''!='')`` (False). Thus, to form any integer, we can just add arbitrary amounts of ``(''=='')+(''=='')+...``. While simple in concept, this addition lengthens the payload **considerably :)**
 
