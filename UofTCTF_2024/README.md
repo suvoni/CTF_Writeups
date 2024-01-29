@@ -58,8 +58,14 @@ Just like with the underscores, we can utilize Unicode alphabet characters for p
 ```Python
 ()._＿𝖈𝖑𝖆𝖘𝖘_＿._＿𝖇𝖆𝖘𝖊𝖘_＿[0]._＿𝖘𝖚𝖇𝖈𝖑𝖆𝖘𝖘𝖊𝖘_＿()[121].𝖌𝖊𝖙_𝖉𝖆𝖙𝖆('.','flag') # (4)
 ```
-Notice that we cannot use these for the ``flag`` file, since ``flag`` is spelled with standard ASCII alphabet characters, and using ``𝖋𝖑𝖆𝖌`` will attempt to open a file which doesn't exist. We need Python code which will form the string ``flag`` during execution without explicitly using those characters.
-
+Notice that we cannot use these for the ``flag`` file, since ``flag`` is spelled with standard ASCII alphabet characters, and using ``𝖋𝖑𝖆𝖌`` will attempt to open a file which doesn't exist. We need Python code which will form the string ``flag`` during execution without explicitly using those characters. To get around this, we can use the ``__doc__`` dunder attribute to obtain documentation about various objects and index that string to get the character we want. We can then concatenate the characters together to get the word ``flag``! For example, to obtain the character **g**, we can use the following:
+```Python
+()._＿𝖉𝖔𝖈_＿[38]
+```
+This will access the tuple documentation and get the 38th character (g):
+```
+Built-in immutable sequence.\n\nIf no ar**g**ument is given, the constructor returns an empty tuple.\nIf iterable is specified the tuple is initialized from iterable's items.\n\nIf the argument is a tuple, the return value is the same object.
+```
 **Python Solution:**
 ```Python
 from pwn import *
