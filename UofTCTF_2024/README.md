@@ -44,7 +44,7 @@ However, here we have several restrictions which prevent this simple code inject
 ```Python
 ().__class__.__bases__[0].__subclasses__()[121].get_data('.','flag') # (2)
 ```
-(For more information on how this works, see [here](https://book.hacktricks.xyz/generic-methodologies-and-resources/python/bypass-python-sandboxes#no-builtins). Note that the index 121 may vary by machine.)
+(For more information on how this works, see [here](https://book.hacktricks.xyz/generic-methodologies-and-resources/python/bypass-python-sandboxes#no-builtins). Note that the index 121 may vary by machine, so some tweaking/bruting may be required.)
 
 We can improve on (2) above to bypass the **__** blacklist by using Unicode character U+FF3F (`＿`) ([found here](https://www.compart.com/en/unicode/U+FF3F)). Amazingly, Python interprets this character as an underscore in code execution, yet it passes the blacklist check!
 ```Python
