@@ -54,10 +54,11 @@ Now we need to bypass the alphanumeric character restriction, and this is where 
 
 ![gif2](./images/the_office.gif)
 
-Just like with the underscores, we can utilize Unicode alphabet characters for parts of our exploit. The Python interpreter will perceive these as normal alphabet chars, but since they are not standard ASCII, they will bypass the blacklist check. I used some Unicode gothic alphabet characters (found [here](https://en.wikipedia.org/wiki/Mathematical_Alphanumeric_Symbols)) as suitable substitutes for most the exploit above:
+Just like with the underscores, we can utilize Unicode alphabet characters for parts of our exploit. The Python interpreter will perceive these as normal alphabet chars, but since they are not standard ASCII, they will bypass the blacklist check. I used some Unicode gothic alphabet characters (found [here](https://en.wikipedia.org/wiki/Mathematical_Alphanumeric_Symbols)) as suitable substitutes for most of the exploit above:
 ```Python
 ()._＿𝖈𝖑𝖆𝖘𝖘_＿._＿𝖇𝖆𝖘𝖊𝖘_＿[0]._＿𝖘𝖚𝖇𝖈𝖑𝖆𝖘𝖘𝖊𝖘_＿()[121].𝖌𝖊𝖙_𝖉𝖆𝖙𝖆('.','flag') # (4)
 ```
+Notice that we cannot use these for the ``flag`` file, since ``flag`` is spelled with standard ASCII alphabet characters, and using ``𝖋𝖑𝖆𝖌`` will attempt to open a file which doesn't exist. We need Python code which will form the string ``flag`` during execution without explicitly using those characters.
 
 **Python Solution:**
 ```Python
