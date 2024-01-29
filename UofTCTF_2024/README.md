@@ -36,9 +36,8 @@ This code sanitizes our input by removing all builtins and enforcing a blacklist
 
 As soon as I saw this challenge, I immediately remembered two very similar challenges I solved from BYUCTF 2023: [one which removed builtins](https://github.com/BYU-CSA/BYUCTF-2023/tree/main/builtins-2) and [another which blacklisted alphanumeric characters](https://github.com/BYU-CSA/BYUCTF-2023/tree/main/a-z0-9). As this challenge is essentially a combination of the two, my solution incorporates similar techniques.
 
-Our ultimate goal is to read the ``flag`` file whose name/path is visible in the Dockerfile. In the absence of any restrictions, we could do this with something like 
-1) ```Python
-print(open('flag').read())
+Our ultimate goal is to read the ``flag`` file whose name/path is visible in the Dockerfile. In the absence of any restrictions, we could do this with something like ```Python
+print(open('flag').read()) # (1)
 ```
 However, here we have several restrictions which prevent this simple code injection. The first one we need to bypass is the removal of builtins, which are native Python functions (such as ``print()``) that are always available without the need to import any modules. To recover these, we can exploit [the dunder method hierarchy](https://www.tutorialsteacher.com/python/magic-methods-in-python) on Python objects like lists ``[]``, tuples ``()``, etc. In essence, we can traverse "up" and "down" the dunder method hierarchy to access all builtin methods which were removed in the sanitization. The following will 
 
