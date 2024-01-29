@@ -32,7 +32,7 @@ safe_eval(code)
 ```
 This code sanitizes our input by removing all builtins and enforcing a blacklist on alphanumeric characters and double underscores "__". This severely limits our ability to execute code, but as a wise man once said...
 
-![piedpic](./nothing-is-impossible-shia-labeouf.gif)
+![gif1](./images/nothing-is-impossible-shia-labeouf.gif)
 
 As soon as I saw this challenge, I immediately remembered two very similar challenges I solved from BYUCTF 2023: [one which removed builtins](https://github.com/BYU-CSA/BYUCTF-2023/tree/main/builtins-2) and [another which blacklisted alphanumeric characters](https://github.com/BYU-CSA/BYUCTF-2023/tree/main/a-z0-9). As this challenge is essentially a combination of the two, my solution incorporates similar techniques.
 
@@ -50,6 +50,9 @@ We can improve on (2) above to bypass the **__** blacklist by using Unicode char
 ```Python
 ()._＿class_＿._＿bases_＿[0]._＿subclasses_＿()[121].get_data('.','flag') # (3)
 ```
+Now we need to bypass the alphanumeric character restriction, and this is where the challenge *really* begins. Buckle up, it's about to get messy...
+
+![gif2](./images/the_office.gif)
 
 **Python Solution:**
 ```Python
