@@ -34,15 +34,10 @@ This code sanitizes our input by removing all builtins and enforcing a blacklist
 
 ![piedpic](./nothing-is-impossible-shia-labeouf.gif)
 
-As soon as I saw this challenge, I immediately remembered two very similar challenges I solved from BYUCTF 2023: [one which removed builtins](https://github.com/BYU-CSA/BYUCTF-2023/tree/main/builtins-2) and [another which blacklisted alphanumeric characters](https://github.com/BYU-CSA/BYUCTF-2023/tree/main/a-z0-9). As this competition is essentially a combination of the two, my solution incorporates concepts from these other challenges.
+As soon as I saw this challenge, I immediately remembered two very similar challenges I solved from BYUCTF 2023: [one which removed builtins](https://github.com/BYU-CSA/BYUCTF-2023/tree/main/builtins-2) and [another which blacklisted alphanumeric characters](https://github.com/BYU-CSA/BYUCTF-2023/tree/main/a-z0-9). As this challenge is essentially a combination of the two, my solution incorporates similar techniques.
 
-A close inspection will reveal that each RGB pixel in the image is encrypted using a permutation-substitution transformation according to the bits of the key. First, the R/G/B values are negated ```(p[i]^255)``` if the 1st/2nd/3rd least significant bits in the key are set - this is the substitution step. Next, the RGB values are swapped around according to positions specified in the ```perm_table``` based upon the remainder of ```key_byte % 6``` - this is the permutation step. The new RGB values are written back into the pixel and the process repeats for all pixels in the image. Finally, the resulting bytes are encoded in base64 and sent to the user.
 
-To decrypt the image, we need to reverse the above process, and we also need to recover the key. We are allowed to give the program one image to encrypt for us with the _same key_ as the flag image. Therefore, we need to cleverly choose the RGB values of our test image so that we can know by looking at the encrypted version (1) which permutation was used and (2) which values were flipped. This will allow us to reconstruct the key byte (```kbyte```) to ultimately decrypt the flag image.
 
-The method I devised to accomplish this task is to use (1,2,4) for the (R,G,B) values in every image pixel. Why use these numbers? Well, the binary equivalent of (1,2,4) is (001, 010, 100), and the negated version of this is (110, 101, 011). Thus, for any combination of substitutions and permutations, we can find the permutation and substitution by the mapping between the original and encrypted forms.
-
-For example, if the first byte (the "R" in RGB) is negated in the substitution step, then (1,2,4) becomes (254,2,4). Then, if the permutation chosen by the key is (0,2,1) then (254,2,4) becomes (254,4,2) (i.e., the 2nd and 3rd values are swapped). Looking at the encrypted version, we know that 254 has to correspond to 1 (reversing the substitution step) and that the 2nd and 3rd values are swapped (since we know the original order). Thus we can also reverse the permutation. Once that is done, we can reverse engineer the key byte used for the current pixel. Repeating this process for all pixels will uncover the entire keystream which we can use to decrypt the flag.
 
 **Python Solution:**
 ```Python
