@@ -36,7 +36,8 @@ This code sanitizes our input by removing all builtins and enforcing a blacklist
 
 As soon as I saw this challenge, I immediately remembered two very similar challenges I solved from BYUCTF 2023: [one which removed builtins](https://github.com/BYU-CSA/BYUCTF-2023/tree/main/builtins-2) and [another which blacklisted alphanumeric characters](https://github.com/BYU-CSA/BYUCTF-2023/tree/main/a-z0-9). As this challenge is essentially a combination of the two, my solution incorporates similar techniques.
 
-Our ultimate goal is to read the ``flag`` file whose name/path is visible in the Dockerfile. In the absence of any restrictions, we could do this with something like ```Python
+Our ultimate goal is to read the ``flag`` file whose name/path is visible in the Dockerfile. In the absence of any restrictions, we could do this with something like 
+```Python
 print(open('flag').read())
 ```
 
