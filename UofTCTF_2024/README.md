@@ -64,7 +64,7 @@ Notice that we cannot use these for the ``flag`` file, since ``flag`` is spelled
 ```
 This will access the tuple documentation and get the 38th character (g):
 ```
-Built-in immutable sequence.\n\nIf no ar**g**ument is given, the constructor returns an empty tuple.\nIf iterable is specified the tuple is initialized from iterable's items.\n\nIf the argument is a tuple, the return value is the same object.
+Built-in immutable sequence.\n\nIf no ar(g)ument is given, the constructor returns an empty tuple.\nIf iterable is specified the tuple is initialized from iterable's items.\n\nIf the argument is a tuple, the return value is the same object.
 ```
 **Python Solution:**
 ```Python
