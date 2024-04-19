@@ -785,8 +785,8 @@ assert(len(msg1) == 64)
 ```
 
 Now, with the messages ``msg1, msg2`` and tags ``tag1, tag2``, how can we recover the secret 32-byte Poly1305 key ``(r,s)``? From [this section of the Wikipedia page on Poly1305](https://en.wikipedia.org/wiki/Poly1305#Use_as_a_one-time_authenticator) (Ref. 1 above) and also the crypto stack exchange answer (Ref. 4 above), we learn that reuse of the same ``(r,s)`` for ``msg1 != msg2`` gives us
-$$tag_1 = (Poly1305_r(msg_1) + s) \quad mod \quad 2^{128}$$
-$$tag_2 = (Poly1305_r(msg_2) + s) \quad mod \quad 2^{128}$$
+$$tag_1 = (Poly1305_r(msg_1) + s) \quad mod \quad 2^{128} \;\;\;\; (1)$$
+$$tag_2 = (Poly1305_r(msg_2) + s) \quad mod \quad 2^{128} \;\;\;\; (2)$$
 Subtracting the two:
 ```math
 tag_1 - tag_2 \equiv Poly1305_r(msg_1) - Poly1305_r(msg_2) \;\; (mod \;\; 2^{128})
@@ -799,9 +799,9 @@ tag_1 - tag_2 \equiv ((c_1^1r^q + c_1^2r^{q-1} + \cdots + c_1^qr^1) \;\; (mod \;
 ```
 Which can be rewritten as:
 ```math
-(((c_1^1 - c_2^1)r^q + (c_1^2 - c_2^2)r^{q-1} + \cdots + (c_1^q - c_2^q)r^1) \;\; (mod \;\; 2^{130}) - 5)
+tag_1 - tag_2 + 2^{128}k = (((c_1^1 - c_2^1)r^q + (c_1^2 - c_2^2)r^{q-1} + \cdots + (c_1^q - c_2^q)r^1) \;\; (mod \;\; 2^{130}) - 5)
 ```
-for $k \in \{-4,...,4\}$. 
+for $k \in \{-4,...,4\}$. This gives us 9 polynomials (for the 9 possible ``k`` values) whose coefficients are known and we know the correct value of ``r`` is a zero for one of them. For any candidate ``r`` value we can directly compute the associated ``s`` value using equation (1) above.
 
 - I've left this snippet out of the previous stuff
     ```python
