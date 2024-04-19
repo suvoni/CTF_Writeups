@@ -763,7 +763,7 @@ print(f'ct3 = {ct3.hex()}')
 #### 4.3. Attempt to forge the **tag** for the encrypted message, compute the corresponding **checksum** and send the message to the **FlagServer**
 
 To implement the Poly1305 key/nonce reuse forgery attack, we used the following references:
-1. The Poly1305 Wikipedia page [here](https://en.wikipedia.org/wiki/Poly1305])
+1. The Poly1305 Wikipedia page ([here](https://en.wikipedia.org/wiki/Poly1305]))
 
 - I've left this snippet out of the previous stuff
     ```python
