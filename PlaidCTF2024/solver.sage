@@ -163,11 +163,14 @@ print('Reading key_stream for IP 192.168.1.3 with custom message #2')
 _, pkt2, ct2, tag2, nonce2, _ = encrypt_custom_message_with_dhcp((b'\x00'*12) + (b'\x02'*14)) # uses IP: *.*.*.3
 
 
-#########################################
-###  Poly1305 key/nonce reuse attack  ###
-#########################################
+#############################################################
+###  Poly1305 Message Forgery Attack - Key & Nonce Reuse  ###
+#############################################################
 
-
+# The output from ChaCha20-Poly1305 is the ciphertext (ChaCha20) and the tag (Poly1305)
+# To execute the Poly1305 forgery attack, we need the input messages fed into the Poly1305 hash function.
+# These messages are a concatenation of the authenticated data (none in our case), padding, the ciphertext,
+# ciphertext padding, and some length fields.
 # https://datatracker.ietf.org/doc/html/rfc7539#section-2.8 
 msg1 = ct1 + b'\x00'*8 + long_to_bytes(len(ct1)) + b'\x00'*7
 msg2 = ct2 + b'\x00'*8 + long_to_bytes(len(ct2)) + b'\x00'*7
@@ -176,15 +179,20 @@ assert(len(msg2) % 16 == 0)
 assert(len(msg1) == len(msg2))
 assert(len(msg1) == 64)
 
+# Define the Poly1305 parameters for our problem
 # https://en.wikipedia.org/wiki/Poly1305
 p = 2**130 - 5
 L = len(msg1)
 q = L // 16
 assert(q == 4)
 
+# Break the messages into consecutive 16-byte chunks
+# (Step 2 of Wikipedia page)
 m1_chunks = [msg1[i*16:i*16+16] + b'\x01' for i in range(q)]
 m2_chunks = [msg2[i*16:i*16+16] + b'\x01' for i in range(q)]
 
+# Interpret the 16-byte chunks as 17-byte little-endian integers by appending a 1 byte to every 16-byte chunk, to be used as coefficients of a polynomial.
+# (Step 3 of Wikipedia page)
 coeffs_1 = []
 coeffs_2 = []
 for i in range(q):
@@ -198,15 +206,18 @@ for i in range(q):
 	coeffs_1.append(c_i_1)
 	coeffs_2.append(c_i_2)
 
+# Interpret the tags (bytes) as little-endian integers
 a1 = int.from_bytes(tag1, 'little')
 a2 = int.from_bytes(tag2, 'little')
 
+# Define the Finite Field over p = 2^130 - 5 and create the 2 polynomials for the chosen pair messages encrypted/authenticated with the same key (r,s)
 # https://en.wikipedia.org/wiki/Poly1305#Security
 # https://crypto.stackexchange.com/questions/83629/forgery-attack-on-poly1305-when-the-key-and-nonce-reused
 R.<r> = GF(p)[]
 poly1305_1 = sum([coeffs_1[i] * r**(q-i) for i in range(q)]) 
 poly1305_2 = sum([coeffs_2[i] * r**(q-i) for i in range(q)])
 
+# Find the roots of all 9 possible polynomials and gather the list of potential r values
 valid_roots = []
 for k in (-4, -3, -2, -1, 0, 1, 2, 3, 4):
 	f = poly1305_1 - poly1305_2 - (a1 - a2 + k*2**128)
@@ -216,6 +227,7 @@ for k in (-4, -3, -2, -1, 0, 1, 2, 3, 4):
 			valid_roots.append(root[0])
 print('valid_roots', valid_roots)
 
+# Find the associated s values for the candidate r values
 r_values = []
 s_values = []
 for r in valid_roots:
@@ -264,7 +276,8 @@ print(f'ct3 = {ct3.hex()}')
 print(f'nonce3 = {nonce3.hex()}')
 
 
-# Create forged authentication tag
+# Create forged authentication tag by directly evaluating the Poly1305 polynomial on msg3
+# by following the steps described here: https://en.wikipedia.org/wiki/Poly1305#Definition_of_Poly1305
 
 # https://datatracker.ietf.org/doc/html/rfc7539#section-2.8 
 msg3 = ct3 + b'\x00'*8 + long_to_bytes(len(ct3)) + b'\x00'*7
