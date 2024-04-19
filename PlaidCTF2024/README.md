@@ -809,20 +809,183 @@ for $k \in {-4,...,4}$. This gives us 9 polynomials (for the 9 possible ``k`` va
 
 These steps are shown in the following sagemath code:
 ```python
+#############################################################
+###  Poly1305 Message Forgery Attack - Key & Nonce Reuse  ###
+#############################################################
 
+# The output from ChaCha20-Poly1305 is the ciphertext (ChaCha20) and the tag (Poly1305)
+# To execute the Poly1305 forgery attack, we need the input messages fed into the Poly1305 hash function.
+# These messages are a concatenation of the authenticated data (none in our case), padding, the ciphertext,
+# ciphertext padding, and some length fields.
+# https://datatracker.ietf.org/doc/html/rfc7539#section-2.8 
+msg1 = ct1 + b'\x00'*8 + long_to_bytes(len(ct1)) + b'\x00'*7
+msg2 = ct2 + b'\x00'*8 + long_to_bytes(len(ct2)) + b'\x00'*7
+assert(len(msg1) % 16 == 0)
+assert(len(msg2) % 16 == 0)
+assert(len(msg1) == len(msg2))
+assert(len(msg1) == 64)
+
+# Define the Poly1305 parameters for our problem
+# https://en.wikipedia.org/wiki/Poly1305
+p = 2**130 - 5
+L = len(msg1)
+q = L // 16
+assert(q == 4)
+
+# Break the messages into consecutive 16-byte chunks
+# (Step 2 of Wikipedia page)
+m1_chunks = [msg1[i*16:i*16+16] + b'\x01' for i in range(q)]
+m2_chunks = [msg2[i*16:i*16+16] + b'\x01' for i in range(q)]
+
+# Interpret the 16-byte chunks as 17-byte little-endian integers by appending a 1 byte to every 16-byte chunk, to be used as coefficients of a polynomial.
+# (Step 3 of Wikipedia page)
+coeffs_1 = []
+coeffs_2 = []
+for i in range(q):
+	k = 0
+	c_i_1 = 0
+	c_i_2 = 0
+	for j in range(0, 128+1, 8):
+		c_i_1 += m1_chunks[i][k] * 2**j
+		c_i_2 += m2_chunks[i][k] * 2**j
+		k += 1
+	coeffs_1.append(c_i_1)
+	coeffs_2.append(c_i_2)
+
+# Interpret the tags (bytes) as little-endian integers
+a1 = int.from_bytes(tag1, 'little')
+a2 = int.from_bytes(tag2, 'little')
+
+# Define the Finite Field over p = 2^130 - 5 and create the 2 polynomials for the chosen pair messages encrypted/authenticated with the same key (r,s)
+# https://en.wikipedia.org/wiki/Poly1305#Security
+# https://crypto.stackexchange.com/questions/83629/forgery-attack-on-poly1305-when-the-key-and-nonce-reused
+R.<r> = GF(p)[]
+poly1305_1 = sum([coeffs_1[i] * r**(q-i) for i in range(q)]) 
+poly1305_2 = sum([coeffs_2[i] * r**(q-i) for i in range(q)])
+
+# Find the roots of all 9 possible polynomials and gather the list of potential r values
+valid_roots = []
+for k in (-4, -3, -2, -1, 0, 1, 2, 3, 4):
+	f = poly1305_1 - poly1305_2 - (a1 - a2 + k*2**128)
+	roots = f.roots()
+	for root in roots:
+		if root[0] <= 2**128:
+			valid_roots.append(root[0])
+print('valid_roots', valid_roots)
+
+# Find the associated s values for the candidate r values
+r_values = []
+s_values = []
+for r in valid_roots:
+	r = Integer(r)
+	poly1305_1 = sum([coeffs_1[i] * r**(q-i) for i in range(q)]) % p
+	poly1305_2 = sum([coeffs_2[i] * r**(q-i) for i in range(q)]) % p
+	s1 = (a1 - poly1305_1) % int(2**128)
+	s2 = (a2 - poly1305_2) % int(2**128)
+	if s1 == s2:
+		r_values.append(r)
+		s_values.append(s1)
+print('r_values', r_values)
+print('s_values', s_values)
+
+
+#######################
+### Message Forgery ###
+#######################
+
+# Now attempt to forge a new message using candidate (r,s) pairs
+
+# Since both the nonce and key are reused, and we know both the plaintext
+# and ciphertext, we can directly recover the keystream via XOR and use this
+# to encrypt arbitrary messages
+key1 = byte_xor(pkt1, ct1)
+key2 = byte_xor(pkt2, ct2)
+assert(key1 == key2)
+assert(len(key1) == 48)
+key = key1
+
+# Encrypt a 3rd adversarial message packet
+pkt3 = bytearray(
+	bytes([int(x) for x in ip_dot_3.split(".")]) +
+	bytes([int(x) for x in gateway_ip.split(".")]) +
+	bytes([255, 255, 255, 0]) +
+	bytes([int(x) for x in own_ip_address.split(".")]) +
+	bytes([int(x) for x in own_ip_address.split(".")]) +
+	b'\x00'*12 +
+	b'\x02'*15 +
+	b"\x00"
+)
+assert(len(pkt3) == 48)
+ct3 = byte_xor(pkt3, key)
+nonce3 = nonce2
+print(f'ct3 = {ct3.hex()}')
+print(f'nonce3 = {nonce3.hex()}')
+
+# https://datatracker.ietf.org/doc/html/rfc7539#section-2.8 
+msg3 = ct3 + b'\x00'*8 + long_to_bytes(len(ct3)) + b'\x00'*7
+assert(len(msg3) % 16 == 0)
+assert(len(msg3) == 64)
+
+# Define the Poly1305 parameters for our problem
+# https://en.wikipedia.org/wiki/Poly1305
+p = 2**130 - 5
+L = len(msg3)
+q = L // 16
+assert(q == 4)
+
+# Break the message into consecutive 16-byte chunks
+# (Step 2 of Wikipedia page)
+m3_chunks = [msg3[i*16:i*16+16] + b'\x01' for i in range(q)]
+
+# Interpret the 16-byte chunks as 17-byte little-endian integers by appending a 1 byte to every 16-byte chunk, to be used as coefficients of a polynomial.
+# (Step 3 of Wikipedia page)
+coeffs_3 = []
+for i in range(q):
+	k = 0
+	c_i_3 = 0
+	for j in range(0, 128+1, 8):
+		c_i_3 += m3_chunks[i][k] * 2**j
+		k += 1
+	coeffs_3.append(c_i_3)
+
+# Try all candidate (r,s) pairs
+for i in range(len(r_values)):
+	
+	r = r_values[i]
+	s = s_values[i]
+	print(f'i = {i}')
+	print(f'--> r = {r}')
+	print(f'--> s = {s}')
+	
+	# Create forged authentication tag by directly evaluating the Poly1305 polynomial on msg3 using (r,s)
+	# by following the steps described here: https://en.wikipedia.org/wiki/Poly1305#Definition_of_Poly1305
+	poly1305_3 = sum([coeffs_3[i] * r**(q-i) for i in range(q)]) % p
+	a3 = (poly1305_3 + s) % 2**128
+	tag3 = int(a3).to_bytes(16, byteorder='little')
+	crc3 = calc_crc(pkt3)
+	pkt3 = ct3 + tag3 + nonce3 
+	# Attempt to send this packet to the FlagServer for decryption:
+	message_to_flag_server = bytearray(
+		dhcp_server_mac + # src mac
+		flag_server_mac + # dst mac
+		b'\x02' +
+		pkt3 +
+		crc3
+	)
+	send_message_to_flag_server(message_to_flag_server)
 ```
 
 #### 5. Send an other request to the **FlagServer** - this time using the `0x03`-byte message type - to make the **FlagServer** send the flag to, what they think is, `example.com`, i.e. us.
 
 ```python
-# Tell the FlagServer to send the flag:
-print('Make FlagServer transmit the flag to (- what they think is -) http://example.com/{flag}')
-message_to_flag_server = bytearray(
-	dhcp_server_mac + # src mac
-	flag_server_mac + # dst mac
-	b'\x03'
-)
-send_message_to_flag_server(message_to_flag_server)
+	# Tell the FlagServer to send the flag:
+	print('Make FlagServer transmit the flag to (- what they think is -) http://example.com/{flag}')
+	message_to_flag_server = bytearray(
+		dhcp_server_mac + # src mac
+		flag_server_mac + # dst mac
+		b'\x03'
+	)
+	send_message_to_flag_server(message_to_flag_server)
 
 conn.close()
 ```
