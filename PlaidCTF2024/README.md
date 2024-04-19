@@ -205,11 +205,11 @@ if __name__ == "__main__":
 
 ## Analysis
 
-At first glance, we can make out a couple of helper functions, a **main** function as well as two server classes: A **DhcpServer** and a **FlagServer**. Let's take a deep dive into the server code to understand the provided funtions.
+At first glance, we can make out a couple of helper functions, a **main** function as well as two server classes: A **DhcpServer** and a **FlagServer**. Let's take a deep dive into the code to understand the provided funtions.
 
 ### Main
 
-Looking at the **main** function, we can see an instance of the **DhcpServer** class, an instance of the **FlagServer** class, which is using the DhcpServer instance, and an endless loop of reading hex encoded packet data from the command line, passing it two both server instances and printing their outputs / return values as hex. Additionally, we can see both servers declaring a `process_pkt(packet)` function, which seems to handle the incoming requests for the respective server.
+The **main** function creates an instance of the **DhcpServer** class and an instance of the **FlagServer** class (which is using the DhcpServer instance). Then it enters an infinite loop of reading hex encoded packet data from the command line, passing it two both server instances and printing their outputs / return values as hex. Additionally, we can see that both servers declare a `process_pkt(packet)` function, which seems to handle the incoming requests for the respective server.
 ```python
 if __name__ == "__main__":
     dhcp = DHCPServer()
@@ -298,7 +298,7 @@ def curl(url, path, dns):
 
 After taking a look at the helper funcitons, let's come back to the server classes: Starting off with the **DhcpServer**.
 
-The `__init__` function of this class seems to declare two lists `leases` and `ips`, which will contain the provided leases and the available ips for this DhcpServer. Additionally it's setting its **MAC address** to the static hex value `1b 7d 6f 49 37 c9`, its gateway to be `192.168.1.1` and it also leases out the ip address `192.168.1.2` to a server named `rngserver_0`.
+The `__init__` function of this class seems to declare two lists `leases` and `ips`, which will contain the provided leases and the available ips for this DhcpServer. Additionally, it sets its **MAC address** to the static hex value `1b 7d 6f 49 37 c9` and its gateway to `192.168.1.1` and also leases out the ip address `192.168.1.2` to a server named `rngserver_0`.
 ```python
 import time
 
@@ -348,9 +348,9 @@ The `get_lease` function, which processes the **DHCP discovery message**, will t
 
 **Note**: If an actual DHCP server was to behave like this, modern networks would break all the time, because multiple devices would use the same ip address, which is supposed to be unique to a single device for the timeframe of the lease, which this DhcpServer implementation does not respect.
 
-Finally this function will construct a response packet similar to a **DHCP offer message** even replying with some of the possible **DHCP options**.
-- The main difference to the official **DHCP protocol** being, that most of the response is being encrypted and it'll attach a checksum, computed on the unencrypted packet, to the end of the response.
-- An other notable piece of information are the two DNS server ip addresses given inside the response packet, which are statically set to `8.8.8.8` and `8.8.4.4` by the **DhcpServer**. We'll come back to this when analyzing the FlagServer.
+Finally this function will construct a response packet similar to a **DHCP offer message**, even replying with some of the possible **DHCP options**.
+- The main difference from the official **DHCP protocol** is that the majority of the response is encrypted. Additionally, a checksum computed on the unencrypted packet is appended to the end of the response.
+- Another notable piece of information are the two DNS server ip addresses given inside the response packet, which are statically set to `8.8.8.8` and `8.8.4.4` by the **DhcpServer**. We'll come back to this when analyzing the FlagServer.
 ```python
     def get_lease(self, dev_name):
         if len(self.ips) != 0:
@@ -380,11 +380,11 @@ Taking a deeper dive into the packet encryption, we'll notice two things:
 1. The `dev_name` part of the response packet is fully controlled by the sender of the **DHCP discovery message**, as we'll see when analyzing the **FlagServer** and the intended structure of such a discovery message. The only pseudo restriction on this part is a trailing `0x00`-byte, which the sender is not supposed to change, but there's no actual check for that byte.
 2. The `nonce` passed into the `encrypt_msg` function is generated using the `get_entropy_from_lavalamps` function, which we'll take a look at right now:
 
-There's two cases for this function:
+There are two cases for this function:
 1. If the **DhcpServer** instance does not contain an active `lease` for a server containing `rngserver` in the server name, then the `get_entropy_from_lavalamps` function will just return `sha256(RNG_INIT)`.
 2. On the other hand, if the **DhcpServer** does contain an active `lease` for a server containing `rngserver` in its name, then the result of the `get_entropy_from_lavalamps` function will be altered by appending some additional data to the argument of the SHA256 computation.
 
-Thus for the sake of simplicity, we should try to achieve the first case and thus get a static return value from this funtion to maybe be able to pull of a **key and nonce reuse** in the `encrypt_msg` function. 
+Thus, for the sake of simplicity, we should try to achieve the first case and get a static return value from this funtion to incur a **key and nonce reuse** in the `encrypt_msg` function. 
 ```python
     def get_entropy_from_lavalamps(self):
         # Get entropy from all available lava-lamp RNG servers
@@ -475,7 +475,7 @@ Besides that, the **FlagServer** can execute two functions depending on the inco
 
 ## Solution
 
-After puzzling all of the pieces together, we're left with a clear plan of action:
+After puzzling all of the pieces together, we are left with a clear plan of action:
 1. Forge a **DHCP offer message** and send it to the **FlagServer** to reconfigure their **DNS server** settings and have them point to us.
 2. Setup our own **DNS server**, which maliciously tells the **FlagServer** that the domain `example.com` also belongs to us.
 3. Setup our own web server, which is supposed to receive the messages send to `example.com` - coming from the **FlagServer**.
@@ -561,7 +561,7 @@ If you're sitting behind a firewall, you'll need to configure it to forward the 
 
 #### 4. Forge a **DHCP offer message** and send it to the **FlagServer** to reconfigure their **DNS server** settings and have them point to us
 
-Wanting to reconfigure the DNS settings of the **FlagServer**, we need to forge a packet, that's supposedly encrypted and signed by the **DhcpServer** such that the **FlagServer** will successfully decrypt and verify the signature of it to reconfigure their own DNS settings.
+To reconfigure the DNS settings of the **FlagServer**, we need to forge a packet that's supposedly encrypted and signed by the **DhcpServer** such that the **FlagServer** will successfully decrypt and verify the signature of it to reconfigure their own DNS settings.
 
 #### 4.1. Retrieve a **KeyStream** of the desired length including the corresponding `nonce`, that we want to reuse
 Remembering our analysis of the `encrypt_msg` function, we've noticed a couple of important things about the key and the nonce, both of which are used to compute the final **KeyStream** in the **ChaCha20** cipher.
@@ -583,7 +583,7 @@ dhcp_req_pkt = bytearray(
 )
 ```
 
-We can also verify, that a packages, we'll receive from the **DhcpServer**, matches the expected IP addresses by computing the crc32 values for the expected packet for all the possible IPs and comparing the precomputed crc32 values to the crc32 value appended to the messag send by the **DhcpServer**.
+We can also verify that packets received from the **DhcpServer** matches the expected IP addresses by computing the crc32 values for the expected packet for all the possible IPs and comparing the precomputed crc32 values to the crc32 value appended to the message sent by the **DhcpServer**.
 
 ```python
 crc32s = {} # hex(crc32) -> leased ip
@@ -604,7 +604,7 @@ def precompute_crc32(dhcp_req_pkt):
 		crc32s[binascii.hexlify(calc_crc(crc_pkt)).decode()] = ip
 ```
 
-And let's just setup a small function to send the crafted packages to the **DhcpServer**:
+And let's just setup a small function to send the crafted packets to the **DhcpServer**:
 
 ```python
 def request_ip_from_dhcp(flag_print = False, dhcp_req_pkt = dhcp_req_pkt):
@@ -644,7 +644,7 @@ def request_ip_from_dhcp(flag_print = False, dhcp_req_pkt = dhcp_req_pkt):
 	return bytes.fromhex(resp_lease_msg_ct), bytes.fromhex(resp_lease_msg_tag), bytes.fromhex(resp_lease_msg_modified_nonce), crc32s[resp_crc32] #.split('.')[-1]
 ```
 
-Remembering, that the IP `192.168.1.1` is static to the gateway, `192.168.1.2` is assigned to `rngserver_0` and `192.168.1.3` is assigned to the **FlagServer**, we need to request leases for all the remaining unassigned IP addresses ending in a number of the range [4 .. 63]. These 60 requests will consume all the remaining unassigned IP addresses. If we now request an additional 61th IP address, we'll kick out the `rngserver_0` from the list of leases:
+Remembering that the IP `192.168.1.1` is static to the gateway, `192.168.1.2` is assigned to `rngserver_0`, and `192.168.1.3` is assigned to the **FlagServer**, we need to request leases for all the remaining unassigned IP addresses ending in a number of the range [4 .. 63]. These 60 requests will consume all the remaining unassigned IP addresses. If we now request an additional 61th IP address, we'll kick out the `rngserver_0` from the list of leases:
 
 ```python
 from pwn import *
@@ -667,12 +667,12 @@ print('Now the lavalamp always returns "sha256(RNG_INIT)!"')
 
 Thus form now on, we can assume a static primary nonce with the value of `sha256(RNG_INIT)`, as long as we don't hide the string `rngserver` in any future device name.
 
-Considering, that the content of the **DHCP offer message** - which is the part, that will get encrypted - has 19 out of their 20 first bytes fixed and we can control the subsequent bytes, we actually can manipulate the first 32 bytes of this message to pull of a **key and none reuse attack**, especially since we can indirectly control the one remaining byte, which in fact is the last octet of the leased ip address, which we just need to cycle through all the other IP addresses again, as we've done before.
+Considering that the content of the **DHCP offer message** - which is the part, that will get encrypted - has 19 out of their 20 first bytes fixed and we can control the subsequent bytes, we actually can manipulate the first 32 bytes of this message to pull of a **key and none reuse attack**, especially since we can indirectly control the one remaining byte, which in fact is the last octet of the leased ip address, which we just need to cycle through all the other IP addresses again, as we've done before.
 
 #### 4.2. Forge a message to the **FlagServer** to override their DNS-server entries
 
 #### 4.2.1. Craft the desired packet
-We'll focus on forgin a packet, that leases the IP address `192.168.1.3` (for no apparent reason) and has the following structure for reasons, that will become clear later on:
+We'll focus on forging a packet that leases the IP address `192.168.1.3` (arbitrarily-chosen) and has the following structure for reasons that will become clear later on:
 
 ```python
 own_ip_address = '127.0.0.1' # Change this to your own public IP address, which hosts your DNS and web server.
@@ -695,7 +695,7 @@ assert(len(pkt3) == 48)
 #### 4.2.2. Encrypt the desired packet
 To encrypt this packet `pkt3`, we'll need a **KeyStream** of length greater or equal to 48.
 
-Because **ChaCha20** is just an XOR encryption using the **KeyStream** as it's XOR key and we can perform a **known-plaintext attack** against the encrypted packets from the **DhcpServer**, we can recover the relevant bytes to encrypt `pkt3` of the **KeyStream** from just a single known plaintext - ciphertext pair.
+Because **ChaCha20** is just an XOR encryption using the **KeyStream** as its XOR key, we can perform a **known-plaintext attack** against the encrypted packets from the **DhcpServer**, allowing us to recover the relevant bytes to encrypt `pkt3` of the **KeyStream** from just a single known plaintext - ciphertext pair.
 
 To be able to double check our work and because we're going to need it to forge the tag anyways, let's get two different plaintext - ciphertext pairs:
 
@@ -762,7 +762,8 @@ print(f'ct3 = {ct3.hex()}')
 
 #### 4.3. Attempt to forge the **tag** for the encrypted message, compute the corresponding **checksum** and send the message to the **FlagServer**
 
-// TODO Suvoni
+To implement the Poly1305 key/nonce reuse forgery attack, we used the following references:
+1. The Poly1305 Wikipedia page (here)[https://en.wikipedia.org/wiki/Poly1305]
 
 - I've left this snippet out of the previous stuff
     ```python
