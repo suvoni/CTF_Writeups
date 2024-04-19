@@ -805,7 +805,7 @@ Which can be rewritten as:
 ```math
 tag_1 - tag_2 + 2^{128}k = (((c_1^1 - c_2^1)r^q + (c_1^2 - c_2^2)r^{q-1} + \cdots + (c_1^q - c_2^q)r^1) \;\; (mod \;\; 2^{130}) - 5)
 ```
-for $k \in \{-4,...,4\}$. This gives us 9 polynomials (for the 9 possible ``k`` values) whose coefficients are known and we know the correct value of ``r`` is a zero for one of them. For any candidate ``r`` value we can directly compute the associated ``s`` value using equation (1) above.
+for $k \in {-4,...,4}$. This gives us 9 polynomials (for the 9 possible ``k`` values) whose coefficients are known, and we know that the correct value of ``r`` is a zero for one of them. For any candidate ``r`` value we can directly compute the associated ``s`` value using equation (1) above. Thus, we will have a small list of possible ``(r,s)`` keys to forge a new message with; experimentally, for our case the number of pairs was only ever between 1-3. Thus, with high probability the forgery will succeed if we take a random ``(r,s)`` from the candidate list. With this ``(r,s)`` pair, we can directly compute the correct tag for an arbitrary message ``msg3`` of our choosing by manually evaluating the Poly1305 polynomial as described [here](https://en.wikipedia.org/wiki/Poly1305#Definition_of_Poly1305) (Ref. 1).
 
 - I've left this snippet out of the previous stuff
     ```python
