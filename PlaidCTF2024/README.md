@@ -785,7 +785,7 @@ assert(len(msg1) == 64)
 ```
 
 Now, with the messages ``msg1, msg2`` and tags ``tag1, tag2``, how can we recover the secret 32-byte Poly1305 key ``(r,s)``? From [this section of the Wikipedia page on Poly1305](https://en.wikipedia.org/wiki/Poly1305#Use_as_a_one-time_authenticator) (Ref. 1 above) and also the crypto stack exchange answer (Ref. 4 above), we learn that reuse of the same ``(r,s)`` for ``msg1 != msg2`` gives us
-$$tag_1 = (Poly1305_r(msg_1) + s) \: mod \: 2^{128}$$
+$$tag_1 = (Poly1305_r(msg_1) + s) \\ mod \\ 2^{128}$$
 
 - I've left this snippet out of the previous stuff
     ```python
