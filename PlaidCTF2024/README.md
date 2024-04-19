@@ -12,7 +12,7 @@ The local latin dance company is hosting a comp. They have a million-dollar wall
 *Hypotheses*. It's not DNS // There's no way it's DNS // It was DNS
 
 ### Attachment
-- [dhcppp.py](./handout/dhcppp.py)
+- [dhcppp.py](./dhcppp.py)
 ```python
 import time, zlib
 import secrets
