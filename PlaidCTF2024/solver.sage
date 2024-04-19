@@ -275,23 +275,24 @@ nonce3 = nonce2
 print(f'ct3 = {ct3.hex()}')
 print(f'nonce3 = {nonce3.hex()}')
 
-
-# Create forged authentication tag by directly evaluating the Poly1305 polynomial on msg3
-# by following the steps described here: https://en.wikipedia.org/wiki/Poly1305#Definition_of_Poly1305
-
 # https://datatracker.ietf.org/doc/html/rfc7539#section-2.8 
 msg3 = ct3 + b'\x00'*8 + long_to_bytes(len(ct3)) + b'\x00'*7
 assert(len(msg3) % 16 == 0)
 assert(len(msg3) == 64)
 
+# Define the Poly1305 parameters for our problem
 # https://en.wikipedia.org/wiki/Poly1305
 p = 2**130 - 5
 L = len(msg3)
 q = L // 16
 assert(q == 4)
 
+# Break the message into consecutive 16-byte chunks
+# (Step 2 of Wikipedia page)
 m3_chunks = [msg3[i*16:i*16+16] + b'\x01' for i in range(q)]
 
+# Interpret the 16-byte chunks as 17-byte little-endian integers by appending a 1 byte to every 16-byte chunk, to be used as coefficients of a polynomial.
+# (Step 3 of Wikipedia page)
 coeffs_3 = []
 for i in range(q):
 	k = 0
@@ -303,11 +304,15 @@ for i in range(q):
 
 # Try all candidate (r,s) pairs
 for i in range(len(r_values)):
+	
 	r = r_values[i]
 	s = s_values[i]
 	print(f'i = {i}')
 	print(f'--> r = {r}')
 	print(f'--> s = {s}')
+	
+	# Create forged authentication tag by directly evaluating the Poly1305 polynomial on msg3 using (r,s)
+	# by following the steps described here: https://en.wikipedia.org/wiki/Poly1305#Definition_of_Poly1305
 	poly1305_3 = sum([coeffs_3[i] * r**(q-i) for i in range(q)]) % p
 	a3 = (poly1305_3 + s) % 2**128
 	tag3 = int(a3).to_bytes(16, byteorder='little')
@@ -322,6 +327,7 @@ for i in range(len(r_values)):
 		crc3
 	)
 	send_message_to_flag_server(message_to_flag_server)
+
 	# Tell the FlagServer to broadcast the flag:
 	print('Make FlagServer transmit the flag to (- what they think is -) http://example.com/{flag}')
 	message_to_flag_server = bytearray(
