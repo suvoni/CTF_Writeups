@@ -1,4 +1,4 @@
-# Plaid CTF 2024 Writeup (Team: L3ak, 38rd Place)
+# Plaid CTF 2024 Writeup (Team: L3ak, 38th Place)
 Competition URL: https://plaidctf.com/
 ## Overview
 
