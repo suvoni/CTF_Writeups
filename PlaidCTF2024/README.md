@@ -769,7 +769,7 @@ To implement the Poly1305 key/nonce reuse forgery attack, we used the following 
 4. This Crypto Stack Exchange post (poncho's answer) ([here](https://crypto.stackexchange.com/questions/83629/forgery-attack-on-poly1305-when-the-key-and-nonce-reused))
 
 From Ref. 2, we can see the detailed structure of the ChaCha20-Poly1305 AEAD algorithm:
-![chacha20_poly1305](./ChaCha20-Poly1305.png)
+![chacha20_poly1305](./ChaCha20-Poly1305.jpg)
 
 From [this section of the Wikipedia page on Poly1305](https://en.wikipedia.org/wiki/Poly1305#Use_as_a_one-time_authenticator) (Ref. 1 above) and also the crypto stack exchange answer (Ref. 4 above), we learn that reuse of the same 
 
