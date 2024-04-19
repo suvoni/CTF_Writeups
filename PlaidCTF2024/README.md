@@ -789,7 +789,7 @@ $$tag_1 = (Poly1305_r(msg_1) + s) \quad mod \quad 2^{128}$$
 $$tag_2 = (Poly1305_r(msg_2) + s) \quad mod \quad 2^{128}$$
 Subtracting the two:
 $$tag_1 - tag_2 \equiv Poly1305_r(msg_1) - Poly1305_r(msg_2) \quad (mod \quad 2^{128})$$
-$$tag_1 - tag_2 \equiv ((c_1r^q + c_1r^{q-1} + \cdots + c_qr^1) mod 2^{130} - 5) mod 2^{128}$$
+$$tag_1 - tag_2 \equiv ((c_1r^q + c_2r^{q-1} + \cdots + c_qr^1) \ mod \ 2^{130} - 5) \ mod \ 2^{128}$$
 
 - I've left this snippet out of the previous stuff
     ```python
