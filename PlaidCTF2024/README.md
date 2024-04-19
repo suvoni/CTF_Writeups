@@ -792,7 +792,7 @@ Subtracting the two:
 tag_1 - tag_2 \equiv Poly1305_r(msg_1) - Poly1305_r(msg_2) \;\; (mod \;\; 2^{128})
 ```
 ```math
-tag_1 - tag_2 \equiv ((c^1_1r^q + c^1_2r^{q-1} + \cdots + c^1_qr^1) \;\; (mod \;\; 2^{130}) - 5) \;\; mod \;\; 2^{128}
+tag_1 - tag_2 \equiv (((c^1)_1r^q + (c^1)_2r^{q-1} + \cdots + (c^1)_qr^1) \;\; (mod \;\; 2^{130}) - 5) \;\; mod \;\; 2^{128}
 ```
 ```math
 - ((c^2_1r^q + c^2_2r^{q-1} + \cdots + c^2_qr^1) \;\; (mod \;\; 2^{130}) - 5) \;\; mod \;\; 2^{128}
