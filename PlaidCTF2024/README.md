@@ -788,7 +788,9 @@ Now, with the messages ``msg1, msg2`` and tags ``tag1, tag2``, how can we recove
 $$tag_1 = (Poly1305_r(msg_1) + s) \quad mod \quad 2^{128}$$
 $$tag_2 = (Poly1305_r(msg_2) + s) \quad mod \quad 2^{128}$$
 Subtracting the two:
-$$tag_1 - tag_2 \equiv Poly1305_r(msg_1) - Poly1305_r(msg_2) \quad (mod \quad 2^{128})$$
+```math
+tag_1 - tag_2 \equiv Poly1305_r(msg_1) - Poly1305_r(msg_2) \;\; (mod \;\; 2^{128})
+```
 $$tag_1 - tag_2 \equiv ((c_1r^q + c_2r^{q-1} + \cdots + c_qr^1) \quad mod \quad 2^{130} - 5) \quad mod \quad 2^{128}$$
 
 - I've left this snippet out of the previous stuff
