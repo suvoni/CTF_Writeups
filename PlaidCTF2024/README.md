@@ -792,12 +792,16 @@ Subtracting the two:
 tag_1 - tag_2 \equiv Poly1305_r(msg_1) - Poly1305_r(msg_2) \;\; (mod \;\; 2^{128})
 ```
 ```math
-tag_1 - tag_2 \equiv ((c_1^1r^q + c_1^2r^{q-1} + \cdots + {c_1}^qr^1) \;\; (mod \;\; 2^{130}) - 5) \;\; mod \;\; 2^{128}
+tag_1 - tag_2 \equiv ((c_1^1r^q + c_1^2r^{q-1} + \cdots + c_1^qr^1) \;\; (mod \;\; 2^{130}) - 5) \;\; mod \;\; 2^{128}
 ```
 ```math
-- ((c^2_1r^q + c^2_2r^{q-1} + \cdots + c^2_qr^1) \;\; (mod \;\; 2^{130}) - 5) \;\; mod \;\; 2^{128}
+- ((c_2^1r^q + c_2^2r^{q-1} + \cdots + c_2^qr^1) \;\; (mod \;\; 2^{130}) - 5) \;\; mod \;\; 2^{128}
 ```
-
+Which can be rewritten as:
+```math
+(((c_1^1 - c_2^1)r^q + (c_1^2 - c_2^2)r^{q-1} + \cdots + (c_1^q - c_2^q)r^1) \;\; (mod \;\; 2^{130}) - 5)
+```
+for $k \in \{-4,...,4\}$. 
 
 - I've left this snippet out of the previous stuff
     ```python
