@@ -790,6 +790,10 @@ $$tag_2 = (Poly1305_r(msg_2) + s) \quad mod \quad 2^{128}$$
 Subtracting the two:
 ```math
 tag_1 - tag_2 \equiv Poly1305_r(msg_1) - Poly1305_r(msg_2) \;\; (mod \;\; 2^{128})
+tag_2
+```
+```math
+hi
 ```
 $$tag_1 - tag_2 \equiv ((c_1r^q + c_2r^{q-1} + \cdots + c_qr^1) \quad mod \quad 2^{130} - 5) \quad mod \quad 2^{128}$$
 
