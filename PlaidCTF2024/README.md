@@ -764,6 +764,14 @@ print(f'ct3 = {ct3.hex()}')
 
 To implement the Poly1305 key/nonce reuse forgery attack, we used the following references:
 1. The Poly1305 Wikipedia page ([here](https://en.wikipedia.org/wiki/Poly1305]))
+2. The ChaCha20-Poly1305 Wikipedia Page ([here](https://en.wikipedia.org/wiki/ChaCha20-Poly1305))
+3. RFC 7539, the specification for ChaCha20 and Poly1305 ([here](https://datatracker.ietf.org/doc/html/rfc7539#section-2.8))
+4. This Crypto Stack Exchange post (poncho's answer) ([here](https://crypto.stackexchange.com/questions/83629/forgery-attack-on-poly1305-when-the-key-and-nonce-reused))
+
+From Ref. 2, we can see the detailed structure of the ChaCha20-Poly1305 AEAD algorithm:
+![chacha20_poly1305](./ChaCha20-Poly1305.png)
+
+From [this section of the Wikipedia page on Poly1305](https://en.wikipedia.org/wiki/Poly1305#Use_as_a_one-time_authenticator) (Ref. 1 above) and also the crypto stack exchange answer (Ref. 4 above), we learn that reuse of the same 
 
 - I've left this snippet out of the previous stuff
     ```python
