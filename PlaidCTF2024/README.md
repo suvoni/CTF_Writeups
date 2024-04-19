@@ -790,12 +790,14 @@ $$tag_2 = (Poly1305_r(msg_2) + s) \quad mod \quad 2^{128}$$
 Subtracting the two:
 ```math
 tag_1 - tag_2 \equiv Poly1305_r(msg_1) - Poly1305_r(msg_2) \;\; (mod \;\; 2^{128})
-tag_2
 ```
 ```math
-hi
+tag_1 - tag_2 \equiv ((c^1_1r^q + c^1_2r^{q-1} + \cdots + c^1_qr^1) \;\; (mod \;\; 2^{130}) - 5) \;\; mod \;\; 2^{128}
 ```
-$$tag_1 - tag_2 \equiv ((c_1r^q + c_2r^{q-1} + \cdots + c_qr^1) \quad mod \quad 2^{130} - 5) \quad mod \quad 2^{128}$$
+```math
+- ((c^2_1r^q + c^2_2r^{q-1} + \cdots + c^2_qr^1) \;\; (mod \;\; 2^{130}) - 5) \;\; mod \;\; 2^{128}
+```
+
 
 - I've left this snippet out of the previous stuff
     ```python
