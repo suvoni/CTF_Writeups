@@ -762,6 +762,8 @@ print(f'ct3 = {ct3.hex()}')
 
 #### 4.3. Attempt to forge the **tag** for the encrypted message, compute the corresponding **checksum** and send the message to the **FlagServer**
 
+This section addresses the following question: Given the Poly1305 authentication tags ``tag1, tag2`` for 2 known, distinct messages ``msg1, msg2`` which are MAC'ed with the same secret 32-byte Poly1305 key ``(r,s)``, how can we recover ``(r,s)`` to forge arbitrary messages?
+
 To implement the Poly1305 key/nonce reuse forgery attack, we used the following references:
 1. The Poly1305 Wikipedia page ([here](https://en.wikipedia.org/wiki/Poly1305]))
 2. The ChaCha20-Poly1305 Wikipedia Page ([here](https://en.wikipedia.org/wiki/ChaCha20-Poly1305))
@@ -772,9 +774,20 @@ To implement the Poly1305 key/nonce reuse forgery attack, we used the following 
 From Ref. 2, we can see the detailed structure of the ChaCha20-Poly1305 AEAD algorithm:
 ![chacha20_poly1305](./ChaCha20-Poly1305.jpg)
 
-ChaCha20 is used to generate a keystream that is XORed with the plaintext to produce the ciphertext. The ciphertext (C) and the associated data (AD) are then authenticated using Poly1305 to provide an authentication tag to ensure integrity. Poly1305 takes as its input a message with the following field structure: ``AD || pad(AD) || C || pad(C) || len(AD) || len(C)``. The server code in this challenge doesn't use any AD, so in reality we have ``C || pad(C) || len(AD) || len(C)``.
+ChaCha20 is used to generate a keystream that is XORed with the plaintext to produce the ciphertext. The ciphertext (C) and the associated data (AD) are then authenticated using Poly1305 to provide an authentication tag to ensure integrity. Poly1305 takes as its input a message with the following field structure: ``AD || pad(AD) || C || pad(C) || len(AD) || len(C)``. The server code in this challenge doesn't use any AD, so in our scenario we only have ``C || pad(C) || len(AD) || len(C)``. For the forgery attack to work, we need two messages encrypted/authenticated with the same nonce/key - and we already have these from Section 4.2.2! Let's use the ciphertexts to construct the full input messages to the Poly1305 authenticator:
+```python
+msg1 = ct1 + b'\x00'*8 + long_to_bytes(len(ct1)) + b'\x00'*7
+msg2 = ct2 + b'\x00'*8 + long_to_bytes(len(ct2)) + b'\x00'*7
+assert(len(msg1) % 16 == 0)
+assert(len(msg2) % 16 == 0)
+assert(len(msg1) == len(msg2))
+assert(len(msg1) == 64)
+```
 
-From [this section of the Wikipedia page on Poly1305](https://en.wikipedia.org/wiki/Poly1305#Use_as_a_one-time_authenticator) (Ref. 1 above) and also the crypto stack exchange answer (Ref. 4 above), we learn that reuse of the same 
+Now, with the messages ``msg1, msg2`` and tags ``tag1, tag2``, how can we recover the secret 32-byte Poly1305 key ``(r,s)``? From [this section of the Wikipedia page on Poly1305](https://en.wikipedia.org/wiki/Poly1305#Use_as_a_one-time_authenticator) (Ref. 1 above) and also the crypto stack exchange answer (Ref. 4 above), we learn that reuse of the same ``(r,s)`` for ``msg1 != msg2`` gives us
+$$
+tag_1 = (Poly1305_r(msg_1) + s) mod 2^{128}
+$$
 
 - I've left this snippet out of the previous stuff
     ```python
