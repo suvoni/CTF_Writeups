@@ -6,7 +6,7 @@ Competition URL: https://plaidctf.com/
 | --------- | -------- | ------ | ------ | ------------------------------------------- |
 | DHCPPP    | crypto   |  200   |   42   | PCTF{d0nt_r3u5e_th3_n0nc3_d4839ed727736624} |
 
-## Authors
+## Writeup Authors
 - [Matthias](https://github.com/0x-Matthias/)
 - [Suvoni](https://github.com/suvoni/)
 
